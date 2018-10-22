@@ -1,0 +1,26 @@
+﻿
+body{
+	color: #595959;
+	font-family:'Microsoft YaHei',Arial;
+	font-size:1.4rem;
+	line-height: 1.5em;
+	background-color:#153039;
+}
+a{
+	color:#595959;
+	text-decoration:none;
+}
+a:hover{
+  color: #F07402;
+}
+img {
+	max-width: 100%;
+}
+input{
+	color:#323232;
+}
+h1,h2,h3{
+	font-size:1.6rem;
+}
+
+

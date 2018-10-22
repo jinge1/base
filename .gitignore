@@ -1,0 +1,9 @@
+*/*/node_modules/
+*/*/dist/
+*/*/python/*/bin
+*/*/python/*/lib
+npm-debug.log
+projectConfig.js
+.DS_Store
+.vscode
+.package-lock.json
