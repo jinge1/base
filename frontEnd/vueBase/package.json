@@ -5,7 +5,8 @@
   "main": "./src/main.js",
   "scripts": {
     "start": "webpack-dev-server --config ./bin/webpack.dev.js --hot --progress --open",
-    "dev": "webpack-dev-server --config ./bin/webpack.dev.js --hot --progress"
+    "dev": "webpack-dev-server --config ./bin/webpack.dev.js --hot --progress",
+    "build": "webpack --config ./bin/webpack.prod.js --progress"
   },
   "author": "",
   "license": "ISC",

@@ -1,7 +1,7 @@
 */*/node_modules/
 */*/dist/
-*/*/bin
-*/*/lib
+python/*/bin
+python/*/lib
 npm-debug.log
 .DS_Store
 .vscode
