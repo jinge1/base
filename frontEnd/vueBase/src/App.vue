@@ -10,4 +10,7 @@ export default {
 </script>
 
 <style>
+.app-page-center{
+  text-align: center;
+}
 </style>

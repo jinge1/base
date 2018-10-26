@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="empty">
     no-path
   </div>
 </template>
@@ -9,5 +9,10 @@ export default {
 }
 </script>
 
-<style lang="css">
+<style>
+.app-page-empty::after{
+  content:'no path';
+  color:red;
+  background: orange;
+}
 </style>

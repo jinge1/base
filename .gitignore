@@ -1,5 +1,6 @@
 */*/node_modules/
 */*/dist/
+*/*/lib/
 python/*/bin
 python/*/lib
 npm-debug.log

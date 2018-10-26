@@ -20,6 +20,7 @@
     "css-loader": "^1.0.0",
     "file-loader": "^2.0.0",
     "html-webpack-plugin": "^3.2.0",
+    "mini-css-extract-plugin": "^0.4.4",
     "os-ip": "^1.0.0",
     "postcss-loader": "^3.0.0",
     "precss": "^3.1.2",
