@@ -12,7 +12,7 @@ function resolve(name) {
 module.exports = {
   mode: 'production',
   entry: {
-    vue_libs: ['vue', 'vue-router', 'vuex'],
+    vue_libs: ['vue', 'vue-router', 'vuex', './src/test.js'],
     // 'element_libs': ['element-ui']
   },
   output: {
@@ -75,8 +75,3 @@ module.exports = {
     })
   ]
 }
-
-
-// new webpack.DllReferencePlugin({
-//   manifest: dll_manifest
-// }),

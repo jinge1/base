@@ -11,6 +11,7 @@
 </template>
 
 <script>
+import '../test.js'
 export default {
   data(){
     return {
