@@ -11,18 +11,18 @@ function resolve(name) {
 module.exports = {
   mode: 'production',
   entry: {
-    vue_libs: ['vue', 'vue-router', 'vuex', './src/test.js', './src/components/Loading.vue', './src/public/reset.css'],
+    vue_libs: ['./src/dll.js']
     // 'element_libs': ['element-ui']
   },
   output: {
     filename: '[name].v1.js',
     // chunkFilename: 'chunk/[id].[chunkhash:8].js',
     path: resolve('dll'),
-    library: '[name]_[chunkhash:8]'
-    // publicPath: './'
+    library: '[name]_[chunkhash:8]',
+    publicPath: './dll/'
   },
   resolve: {
-    extensions: ['.tsx', '.ts', '.css', '.js', '.vue']
+    extensions: ['.tsx', '.ts', '.css', '.js', '.vue', '.css']
   },
   module: {
     rules: [

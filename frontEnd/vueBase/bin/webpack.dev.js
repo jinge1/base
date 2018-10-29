@@ -22,7 +22,7 @@ module.exports = {
     publicPath: '/'
   },
   resolve: {
-    extensions: ['.tsx', '.ts', '.js', '.vue']
+    extensions: ['.tsx', '.ts', '.js', '.vue', '.css']
   },
   module: {
     rules: [
