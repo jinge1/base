@@ -1,8 +1,10 @@
 const path = require('path')
+const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const webpack = require('webpack')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
+
 const dll_manifest = require('../dll/vue_libs_manifest.v1.json')
 const { VueLoaderPlugin } = require('vue-loader')
 
@@ -48,6 +50,11 @@ module.exports = {
     new MiniCssExtractPlugin({filename: 'style/[name].[contenthash:8].css'}),
     new webpack.DllReferencePlugin({
       manifest: dll_manifest
-    })
+    }),
+    new CopyWebpackPlugin([{
+      from: resolve('dll'),
+      to: resolve('dist/dll'),
+      toType: 'dir'
+    }])
   ]
 }

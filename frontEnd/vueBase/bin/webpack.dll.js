@@ -1,9 +1,8 @@
 const path = require('path')
 const webpack = require('webpack')
-// const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
-// const ExtractTextPlugin = require('extract-text-webpack-plugin')
-// const {VueLoaderPlugin} = require('vue-loader')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const {VueLoaderPlugin} = require('vue-loader')
 
 function resolve(name) {
   return path.resolve(__dirname, '..', name)
@@ -12,7 +11,7 @@ function resolve(name) {
 module.exports = {
   mode: 'production',
   entry: {
-    vue_libs: ['vue', 'vue-router', 'vuex', './src/test.js'],
+    vue_libs: ['vue', 'vue-router', 'vuex', './src/test.js', './src/components/Loading.vue', './src/public/reset.css'],
     // 'element_libs': ['element-ui']
   },
   output: {
@@ -36,9 +35,10 @@ module.exports = {
         loader: 'babel-loader'
       }, {
         test: /\.css$/,
-        use: ['vue-style-loader', 'style-loader', 'css-loader', 'postcss-loader']
+        // use: ['vue-style-loader', 'style-loader', 'css-loader', 'postcss-loader']
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader']
       }, {
-        test: /\.(png|svg|jpg|gif)$/,
+        test: /\.(png|svg|jpg|jpeg|gif)$/,
         use: [
           {
             loader: 'file-loader',
@@ -66,8 +66,8 @@ module.exports = {
   },
   plugins: [
     new CleanWebpackPlugin([resolve('dll')], {root: resolve('/')}),
-    // new HtmlWebpackPlugin({filename: 'index.html', template: 'src/index.html'}),
-    // new VueLoaderPlugin(),
+    new VueLoaderPlugin(),
+    new MiniCssExtractPlugin({filename: 'style/[name].[contenthash:8].css'}),
     new webpack.DllPlugin({
       path: resolve('dll/[name]_manifest.v1.json'),
       // path.join(__dirname, 'dist', '[name]-manifest.json'),
