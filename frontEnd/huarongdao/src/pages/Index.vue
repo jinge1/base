@@ -11,7 +11,6 @@
 import VSwipe from '../utils/VSwipe2'
 import Huarongdao from '../utils/Huarongdao2'
 
-
 export default {
   data() {
     return {

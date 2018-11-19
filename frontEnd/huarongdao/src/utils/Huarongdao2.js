@@ -189,61 +189,61 @@ export default class Huarongdao {
   }
 
   setPosition({isChange, lastDirection, differX, differY, lastDirectionNum}) {
-    let {lockDirection, singleWidth, currentIndex, renderList} = this
-    let {x, y, hSize, vSize} = renderList[currentIndex]
+    let {lockDirection, singleWidth, currentIndex, renderList, spaceWidth} = this
+    let {x, y, hSize, vSize, left: preLeft, top: preTop} = renderList[currentIndex]
     let {left, top} = this.getPositionDetail({x, y, hSize, vSize})
 
-    if(lastDirection === ''){
-      // lastDirection = isChange
-    }
     if(lockDirection === ''){
-      // lockDirection = isChange
+      lockDirection = lastDirection
     }
-    console.log('isChange: ', isChange)
-    console.log('lastDirection: ', lastDirection)
-    if (!isChange) {
-      console.log('yes')
-    }else{
-      console.log('no')
-    }
-    console.log('---------------')
 
-    if (lastDirection === lastDirection) {
-      if (lockDirection === '') {
-        // lockDirection = lastDirection
+    if(lastDirection === ''){
+      lastDirection = lockDirection
+    }
+
+    if(lastDirection !== ''){
+      lockDirection = lockDirection ? lockDirection : lockDirection
+      if(lockDirection !== lastDirection){
+        let nextLeft = left + differX
+        let nextTop = top + differY
+        let min = spaceWidth * 2
+        // console.log('lockDirection: ', lockDirection)
+        // console.log('lastDirection: ', lastDirection)
+        // console.log('Math.abs(nextTop - preTop): ', Math.abs(nextTop - preTop))
+        // console.log('min: ', min)
+        // console.log('-----------: ')
+        if(lockDirection === 'h' && Math.abs(nextTop - preTop) > min){
+          lockDirection = lastDirection
+        }
+        if(lockDirection === 'v' && Math.abs(nextLeft - preLeft) > min){
+          lockDirection = lastDirection
+        }
       }
-      // if (lockDirection === lastDirection ) {
-        // console.log('yes')
-      // } else {
-      //   console.log('no')
-      //   this.lockDirection = lastDirection
-      // }
-    } else {
-      if (lockDirection === '') {
-        // lockDirection = preDirection
-      }
-      // if (lockDirection === lastDirection) {
-      //   console.log('yes')
-      // } else {
-        // console.log('no')
-      //   this.lockDirection = lastDirection
-      // }
+      this.changePosition(lockDirection, differX, differY)
     }
-
-
-    this.changePosition(lastDirection, differX, differY)
 
   }
 
   changePosition(direction, differX, differY) {
-    let {currentIndex, renderList} = this
-    let {x, y, hSize, vSize} = renderList[currentIndex]
+    let {currentIndex, renderList, lockDirection} = this
+    let {x, y, hSize, vSize,left: preLeft, top: preTop} = renderList[currentIndex]
     let {left, top} = this.getPositionDetail({x, y, hSize, vSize})
+    // let nextLeft = preLeft
+    // let nextTop = preTop
+    let nextLeft = left + differX
+    let nextTop = top + differY
+    console.log('left: ', nextLeft - preLeft)
+    this.lockDirection = lockDirection
     if (direction === 'h') {
-      this.renderList[currentIndex].left = left + differX
+      if(differX < 0){
+        // console.log('left')
+      }
+      nextLeft = left + differX
+      this.renderList[currentIndex].left = nextLeft
     }
     if (direction === 'v') {
-      this.renderList[currentIndex].top = top + differY
+      nextTop = top + differY
+      this.renderList[currentIndex].top = nextTop
     }
 
     if (typeof this.updatePosition === 'function') {
