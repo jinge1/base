@@ -107,6 +107,7 @@ export default class TouchEvent {
       lastDifferX: 0,
       lastDifferY: 0,
       lastDirection: '',
+      isChange: false,
       lastDirectionNum: 0
     }
 
@@ -126,12 +127,12 @@ export default class TouchEvent {
   // 事件移动中的处理
   eventMove(e) {
     if (this.isEventStart) {
-      let {disTime, startDirection, startInfo, maxInfo, lastInfo} = this
+      let {disTime, startDirection, startInfo, lastInfo} = this
       let now = Date.now()
       // 获取当前坐标
       let {x, y} = this.getOrdinate(e)
 
-      let {lastTime, lastX, lastY} = lastInfo
+      let {lastTime, lastX, lastY, lastDirection: preLastDirection} = lastInfo
       let {startX, startY, startTime} = startInfo
 
       let differX = x - startX
@@ -161,6 +162,7 @@ export default class TouchEvent {
 
       // 记录最后300毫秒内的坐标，用作统计最后一段距离的速度及方向
       if (now - lastTime > disTime) {
+        let isChange = lastDirection !== preLastDirection
         this.lastInfo = {
           lastTime: now,
           lastX: x,
@@ -168,10 +170,10 @@ export default class TouchEvent {
           lastDifferX: lastDifferX,
           lastDifferY: lastDifferY,
           lastDirection,
+          isChange,
           lastDirectionNum
         }
       }
-
 
       this.setMaxInfo(differX, differY)
 
@@ -202,48 +204,6 @@ export default class TouchEvent {
     this.maxInfo = {
       maxX,
       maxY
-    }
-  }
-
-  // 获取最后时间运动信息
-  getCurrentInfo(){
-    let {
-      disTime,
-      moveInfo,
-      lastInfo
-    } = this
-    let {
-      moveTime,
-      moveX,
-      moveY,
-      differX,
-      differY,
-    } = moveInfo
-
-    let {
-      lastTime,
-      lastX,
-      lastY,
-      lastDirection,
-      lastDirectionNum
-    } = lastInfo
-
-
-    if(moveTime - lastTime > disTime/10){
-      let lastDifferX = moveX - lastX
-      let lastDifferY = moveY - lastY
-      let {direction, directionNum} = this.getDirection(lastDifferX, lastDifferY)
-      return {
-        differX,
-        differY,
-        direction
-      }
-    }else{
-      return {
-        differX,
-        differY,
-        direction: lastDirection
-      }
     }
   }
 

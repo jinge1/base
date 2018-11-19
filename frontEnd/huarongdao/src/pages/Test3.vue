@@ -173,6 +173,7 @@ export default {
           differY,
           direction
         } = swipe.getCurrentInfo()
+        // console.log('direction: ', direction)
         huarongdao.setPosition(direction, differX, differY)
       }
       swipe.end = () => {
@@ -268,6 +269,9 @@ ul {
 
 .game {
   text-align: center;
+  width:100%;
+  height:600px;
+  overflow: hidden;
 }
 
 .roles-list {
