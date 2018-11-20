@@ -53,6 +53,68 @@ export default class Huarongdao {
   setRole(index) {
     this.currentIndex = index
     this.lockDirection = ''
+    // this.checkRight()
+    this.checkLeft()
+  }
+  checkRight() {
+    let {
+      currentIndex,
+      renderList,
+      hSize: totalHSize,
+      vSize: totalVize,
+      spaceWidth,
+      singleWidth
+    } = this
+    let {left, top, width, height} = renderList[currentIndex]
+    let had = renderList.some(({
+      left: itemLeft,
+      top: itemTop,
+      width: itemWidth,
+      height: itemHeight
+    }) => {
+      let flg = false
+      if(itemTop <= top && itemTop + itemHeight > top){
+        flg = true
+      }
+
+      if(itemTop > top && itemTop < top + height){
+        flg = true
+      }
+
+      return flg && itemLeft > left + width && itemLeft - (left + width) < singleWidth
+    })
+    console.log('had: ', had)
+
+  }
+
+  checkLeft(){
+    let {
+      currentIndex,
+      renderList,
+      hSize: totalHSize,
+      vSize: totalVize,
+      spaceWidth,
+      singleWidth
+    } = this
+    let {left, top, width, height} = renderList[currentIndex]
+    let had = renderList.some(({
+      left: itemLeft,
+      top: itemTop,
+      width: itemWidth,
+      height: itemHeight
+    }) => {
+      let flg = false
+      if(itemTop <= top && itemTop + itemHeight > top){
+        flg = true
+      }
+
+      if(itemTop > top && itemTop < top + height){
+        flg = true
+      }
+
+      return flg && itemLeft + itemWidth < left && left - (itemLeft + itemWidth) < singleWidth
+    })
+    console.log('had: ', had)
   }
 
   setIndex(index) {
@@ -190,20 +252,29 @@ export default class Huarongdao {
 
   setPosition({isChange, lastDirection, differX, differY, lastDirectionNum}) {
     let {lockDirection, singleWidth, currentIndex, renderList, spaceWidth} = this
-    let {x, y, hSize, vSize, left: preLeft, top: preTop} = renderList[currentIndex]
+    let {
+      x,
+      y,
+      hSize,
+      vSize,
+      left: preLeft,
+      top: preTop
+    } = renderList[currentIndex]
     let {left, top} = this.getPositionDetail({x, y, hSize, vSize})
 
-    if(lockDirection === ''){
+    if (lockDirection === '') {
       lockDirection = lastDirection
     }
 
-    if(lastDirection === ''){
+    if (lastDirection === '') {
       lastDirection = lockDirection
     }
 
-    if(lastDirection !== ''){
-      lockDirection = lockDirection ? lockDirection : lockDirection
-      if(lockDirection !== lastDirection){
+    if (lastDirection !== '') {
+      lockDirection = lockDirection
+        ? lockDirection
+        : lockDirection
+      if (lockDirection !== lastDirection) {
         let nextLeft = left + differX
         let nextTop = top + differY
         let min = spaceWidth * 2
@@ -212,10 +283,10 @@ export default class Huarongdao {
         // console.log('Math.abs(nextTop - preTop): ', Math.abs(nextTop - preTop))
         // console.log('min: ', min)
         // console.log('-----------: ')
-        if(lockDirection === 'h' && Math.abs(nextTop - preTop) > min){
+        if (lockDirection === 'h' && Math.abs(nextTop - preTop) > min) {
           lockDirection = lastDirection
         }
-        if(lockDirection === 'v' && Math.abs(nextLeft - preLeft) > min){
+        if (lockDirection === 'v' && Math.abs(nextLeft - preLeft) > min) {
           lockDirection = lastDirection
         }
       }
@@ -226,16 +297,22 @@ export default class Huarongdao {
 
   changePosition(direction, differX, differY) {
     let {currentIndex, renderList, lockDirection} = this
-    let {x, y, hSize, vSize,left: preLeft, top: preTop} = renderList[currentIndex]
+    let {
+      x,
+      y,
+      hSize,
+      vSize,
+      left: preLeft,
+      top: preTop
+    } = renderList[currentIndex]
     let {left, top} = this.getPositionDetail({x, y, hSize, vSize})
     // let nextLeft = preLeft
     // let nextTop = preTop
     let nextLeft = left + differX
     let nextTop = top + differY
-    console.log('left: ', nextLeft - preLeft)
     this.lockDirection = lockDirection
     if (direction === 'h') {
-      if(differX < 0){
+      if (differX < 0) {
         // console.log('left')
       }
       nextLeft = left + differX

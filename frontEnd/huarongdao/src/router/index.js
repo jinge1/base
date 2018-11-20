@@ -22,6 +22,9 @@ const routes = new VueRouter({
       path: '/test3',
       component: () => import('../pages/Test3')
     }, {
+      path: '/position',
+      component: () => import('../pages/Position')
+    }, {
       // 404路由，该路由配置请当道最后
       path: '*',
       component: () => import('../pages/NoPath')
