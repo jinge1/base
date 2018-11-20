@@ -107,7 +107,6 @@ export default class TouchEvent {
       lastDifferX: 0,
       lastDifferY: 0,
       lastDirection: '',
-      isChange: false,
       lastDirectionNum: 0
     }
 
@@ -132,7 +131,7 @@ export default class TouchEvent {
       // 获取当前坐标
       let {x, y} = this.getOrdinate(e)
 
-      let {lastTime, lastX, lastY, lastDirection: preLastDirection} = lastInfo
+      let {lastTime, lastX, lastY} = lastInfo
       let {startX, startY, startTime} = startInfo
 
       let differX = x - startX
@@ -162,7 +161,6 @@ export default class TouchEvent {
 
       // 记录最后300毫秒内的坐标，用作统计最后一段距离的速度及方向
       if (now - lastTime > disTime) {
-        let isChange = lastDirection !== preLastDirection
         this.lastInfo = {
           lastTime: now,
           lastX: x,
@@ -170,7 +168,6 @@ export default class TouchEvent {
           lastDifferX: lastDifferX,
           lastDifferY: lastDifferY,
           lastDirection,
-          isChange,
           lastDirectionNum
         }
       }
@@ -219,9 +216,8 @@ export default class TouchEvent {
     let directionNum = 0
 
     minNum = startDirection !== ''
-      ? 1
+      ? 0
       : minNum
-
     if (absDifferX > minNum || absDifferY > minNum) {
       if (absDifferX > absDifferY) {
         direction = 'h'

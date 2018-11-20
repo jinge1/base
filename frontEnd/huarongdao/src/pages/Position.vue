@@ -9,7 +9,7 @@
 </template>
 <script>
 import VSwipe from '../utils/VSwipe2'
-import Huarongdao from '../utils/Huarongdao2'
+import Huarongdao from '../utils/Huarongdao3'
 
 export default {
   data() {
@@ -176,12 +176,10 @@ export default {
           direction
         } = moveInfo
         let {
-          isChange,
           lastDirection,
           lastDirectionNum
         } = lastInfo
-        huarongdao.setPosition({
-          isChange,
+        huarongdao.updateRender({
           lastDirection,
           differX,
           differY,
@@ -252,7 +250,7 @@ export default {
       } = renderList[index]
       this.indexRole = index
       // swipe.setStartPosition(left, top)
-      huarongdao.setRole(index)
+      huarongdao.setIndex(index)
     },
     setLayout(){
       let {
