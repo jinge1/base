@@ -1,6 +1,6 @@
 <template>
 <div class="game">
-  <ul class="roles-list" id="roles" :class="{trans: isTrans}">
+  <ul class="roles-list" id="roles" :class="{trans: isTrans}" :style="{height: `${totalHeight}px`}">
     <li v-for="(item, index) in renderList" :class="[`roles-${item.role}`]" :data-index="index" :style="{ width: `${item.width}px`, height: `${item.height}px`, left: `${item.left}px`, top: `${item.top}px`}">
       {{item.name}}
     </li>
@@ -74,35 +74,36 @@ export default {
           y: 0
         },
 
-        {
-          role: 3,
-          x: 0,
-          y: 1
-        },
-        {
-          role: 4,
-          x: 1,
-          y: 1
-        },
+        // {
+        //   role: 3,
+        //   x: 0,
+        //   y: 1
+        // },
+        // {
+        //   role: 4,
+        //   x: 1,
+        //   y: 1
+        // },
 
         // {
         //   role: 5,
         //   x: 0,
         //   y: 3
         // },
-        {
-          role: 6,
-          x: 2,
-          y: 3
-        },
-        {
-          role: 7,
-          x: 3,
-          y: 3
-        }
+        // {
+        //   role: 6,
+        //   x: 2,
+        //   y: 3
+        // },
+        // {
+        //   role: 7,
+        //   x: 3,
+        //   y: 3
+        // }
       ],
       renderList: [],
       spaceScale: 0.02,
+      totalHeight: 0,
       swipe: null,
       huarongdao: null,
       isTrans: true,
@@ -130,6 +131,8 @@ export default {
         this.setLayout()
       }
       huarongdao.setRenderList(layout)
+      let {totalHeight} = huarongdao
+      this.totalHeight = totalHeight
       this.huarongdao = huarongdao
       this.setLayout()
       this.setSwipe()

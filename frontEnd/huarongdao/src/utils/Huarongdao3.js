@@ -12,11 +12,12 @@ export default class Huarongdao {
   }
 
   init() {
-    let {hSize, spaceScale, totalWidth} = this
+    let {hSize, vSize, spaceScale, totalWidth} = this
     let spaceWidth = totalWidth * spaceScale
     let singleWidth = parseInt((totalWidth - spaceWidth * (hSize + 1)) / hSize)
     this.spaceWidth = spaceWidth
     this.singleWidth = singleWidth
+    this.totalHeight = vSize * (spaceWidth + singleWidth) + spaceWidth
   }
 
   setRenderList(layout) {
@@ -109,12 +110,13 @@ export default class Huarongdao {
   }
 
   updateRender(info) {
-    let direction = this.geMoveDirection(info)
-    this.setPosition(direction, differX, differY)
+    let realDirection = this.getMoveDirection(info)
+    let {differX, differY} = info
+    this.setPosition(realDirection, differX, differY)
   }
 
-  geMoveDirection({lastDirection, differX, differY, lastDirectionNum}) {
-    let {lockDirection, singleWidth, currentIndex, renderList, spaceWidth} = this
+  getMoveDirection({lastDirection, differX, differY, lastDirectionNum}) {
+    let {lockDirection, currentIndex, renderList, spaceWidth} = this
     let {
       x,
       y,
@@ -145,13 +147,17 @@ export default class Huarongdao {
   }
 
   setPosition(direction, differX = 0, differY = 0) {
+    if(direction === ''){
+      return false
+    }
     let {
       lockDirection,
       singleWidth,
       currentIndex,
       renderList,
       spaceWidth,
-      totalWidth
+      totalWidth,
+      totalHeight
     } = this
     let {
       x,
@@ -166,25 +172,113 @@ export default class Huarongdao {
     let {left, top} = this.getRenderDetail({x, y, hSize, vSize})
     let nextLeft = left + differX
     let nextTop = top + differY
-    let maxLeft = totalWidth - spaceWidth
-    if(direction === 'h'){
-      if(differX > 0){  // right
-        if(nextLeft + width > maxLeft){
+    let maxH = totalWidth - spaceWidth
+    let maxV = totalHeight - spaceWidth
+    let isCanMove = false
+    let isChanged = lockDirection === direction
 
+    // if(isChanged){
+    //
+    // }else{
+    //
+    // }
+
+    if(direction === 'h'){
+      if(nextLeft < spaceWidth ){
+        nextLeft = spaceWidth
+      }
+      if(nextLeft + width > maxH ){
+        nextLeft = maxH - width
+      }
+
+      let hadOne = true
+
+      if(differX > 0){  // right
+        hadOne = renderList.some(({left: itemLeft, top: itemTop, width: itemWidth, height: itemHeight}) => {
+          let isFind = false
+          if( itemLeft > currentLeft + width && itemLeft - (currentLeft + width) < spaceWidth ){
+            if (itemTop <= currentTop && itemTop + itemHeight > currentTop) {
+              isFind = true
+            }
+            if (itemTop > currentTop && itemTop < currentTop + height) {
+              isFind = true
+            }
+          }
+          return isFind
+        })
+
+        if(!hadOne){
+          this.renderList[currentIndex].left = nextLeft
         }
       }else{  // left
-        if(nextLeft < spaceWidth){
+        hadOne = renderList.some(({left: itemLeft, top: itemTop, width: itemWidth, height: itemHeight}) => {
+          let isFind = false
+          if( itemLeft + itemWidth < currentLeft && currentLeft - (itemLeft + itemWidth) < spaceWidth ){
+            if (itemTop <= currentTop && itemTop + itemHeight > currentTop) {
+              isFind = true
+            }
+            if (itemTop > currentTop && itemTop < currentTop + height) {
+              isFind = true
+            }
+          }
+          return isFind
+        })
 
+        if(!hadOne){
+          this.renderList[currentIndex].left = nextLeft
         }
       }
     }
 
     if(direction === 'v'){
-      if(differY > 0){  // bottom
-
-      }else{  // top
-
+      if(nextTop < spaceWidth ){
+        nextTop = spaceWidth
       }
+      if(nextTop + height > maxV ){
+        nextTop = maxV - height
+      }
+
+
+      let hadOne = true
+
+      if(differY > 0){  // top
+        hadOne = renderList.some(({left: itemLeft, top: itemTop, width: itemWidth, height: itemHeight}) => {
+          let isFind = false
+          if( itemTop < currentTop && currentTop - (itemTop + itemHeight) < spaceWidth ){
+            if (itemLeft <= currentLeft && itemLeft > currentLeft + width) {
+              isFind = true
+            }
+            if (itemTop > currentTop && itemTop < currentTop + height) {
+              isFind = true
+            }
+          }
+          return isFind
+        })
+
+        if(!hadOne){
+          this.renderList[currentIndex].top = nextTop
+        }
+      }else{  // left
+        hadOne = renderList.some(({left: itemLeft, top: itemTop, width: itemWidth, height: itemHeight}) => {
+          let isFind = false
+          if( itemLeft + itemWidth < currentLeft && currentLeft - (itemLeft + itemWidth) < spaceWidth ){
+            if (itemTop <= currentTop && itemTop + itemHeight > currentTop) {
+              isFind = true
+            }
+            if (itemTop > currentTop && itemTop < currentTop + height) {
+              isFind = true
+            }
+          }
+          return isFind
+        })
+
+        if(!hadOne){
+          this.renderList[currentIndex].top = nextTop
+        }
+      }
+
+
+
     }
     // this.lockDirection = lockDirection
   }
