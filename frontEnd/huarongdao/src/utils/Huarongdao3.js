@@ -241,14 +241,14 @@ export default class Huarongdao {
 
       let hadOne = true
 
-      if(differY > 0){  // top
+      if(differY > 0){  // down
         hadOne = renderList.some(({left: itemLeft, top: itemTop, width: itemWidth, height: itemHeight}) => {
           let isFind = false
-          if( itemTop < currentTop && currentTop - (itemTop + itemHeight) < spaceWidth ){
-            if (itemLeft <= currentLeft && itemLeft > currentLeft + width) {
+          if( itemTop > currentTop + height && itemTop - (currentTop + height) < spaceWidth ){
+            if (itemLeft <= currentLeft && itemLeft + itemWidth > currentLeft) {
               isFind = true
             }
-            if (itemTop > currentTop && itemTop < currentTop + height) {
+            if (itemLeft > currentLeft && itemLeft < currentLeft + width) {
               isFind = true
             }
           }
