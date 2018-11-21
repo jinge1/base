@@ -54,59 +54,6 @@ export default class Huarongdao {
   setIndex(index) {
     this.currentIndex = index
     this.lockDirection = ''
-    // this.checkRight()
-    // this.checkLeft()
-  }
-
-  checkRight() {
-    let {
-      currentIndex,
-      renderList,
-      hSize: totalHSize,
-      vSize: totalVize,
-      spaceWidth,
-      singleWidth
-    } = this
-    let {left, top, width, height} = renderList[currentIndex]
-    let had = renderList.some(({left: itemLeft, top: itemTop, width: itemWidth, height: itemHeight}) => {
-      let flg = false
-      if (itemTop <= top && itemTop + itemHeight > top) {
-        flg = true
-      }
-
-      if (itemTop > top && itemTop < top + height) {
-        flg = true
-      }
-
-      return flg && itemLeft > left + width && itemLeft - (left + width) < singleWidth
-    })
-    console.log('had: ', had)
-
-  }
-
-  checkLeft() {
-    let {
-      currentIndex,
-      renderList,
-      hSize: totalHSize,
-      vSize: totalVize,
-      spaceWidth,
-      singleWidth
-    } = this
-    let {left, top, width, height} = renderList[currentIndex]
-    let had = renderList.some(({left: itemLeft, top: itemTop, width: itemWidth, height: itemHeight}) => {
-      let flg = false
-      if (itemTop <= top && itemTop + itemHeight > top) {
-        flg = true
-      }
-
-      if (itemTop > top && itemTop < top + height) {
-        flg = true
-      }
-
-      return flg && itemLeft + itemWidth < left && left - (itemLeft + itemWidth) < singleWidth
-    })
-    console.log('had: ', had)
   }
 
   updateRender(info) {
@@ -177,12 +124,6 @@ export default class Huarongdao {
     let isCanMove = false
     let isChanged = lockDirection === direction
 
-    // if(isChanged){
-    //
-    // }else{
-    //
-    // }
-
     if(direction === 'h'){
       if(nextLeft < spaceWidth ){
         nextLeft = spaceWidth
@@ -245,6 +186,7 @@ export default class Huarongdao {
         hadOne = renderList.some(({left: itemLeft, top: itemTop, width: itemWidth, height: itemHeight}) => {
           let isFind = false
           if( itemTop > currentTop + height && itemTop - (currentTop + height) < spaceWidth ){
+
             if (itemLeft <= currentLeft && itemLeft + itemWidth > currentLeft) {
               isFind = true
             }
@@ -258,14 +200,15 @@ export default class Huarongdao {
         if(!hadOne){
           this.renderList[currentIndex].top = nextTop
         }
-      }else{  // left
+      }else{  // up
         hadOne = renderList.some(({left: itemLeft, top: itemTop, width: itemWidth, height: itemHeight}) => {
           let isFind = false
-          if( itemLeft + itemWidth < currentLeft && currentLeft - (itemLeft + itemWidth) < spaceWidth ){
-            if (itemTop <= currentTop && itemTop + itemHeight > currentTop) {
+          if( itemTop + itemHeight < currentTop && currentTop - (itemTop + itemHeight) < spaceWidth ){
+
+            if (itemLeft <= currentLeft && itemLeft + itemWidth > currentLeft) {
               isFind = true
             }
-            if (itemTop > currentTop && itemTop < currentTop + height) {
+            if (itemLeft > currentLeft && itemLeft < currentLeft + width) {
               isFind = true
             }
           }
@@ -276,11 +219,8 @@ export default class Huarongdao {
           this.renderList[currentIndex].top = nextTop
         }
       }
-
-
-
     }
-    // this.lockDirection = lockDirection
+    this.lockDirection = lockDirection
   }
 
   changePosition(direction, differX, differY) {
