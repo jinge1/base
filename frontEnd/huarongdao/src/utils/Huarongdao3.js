@@ -134,6 +134,7 @@ export default class Huarongdao {
     }
     this.moveIndex = index
     this.lockDirection = lockDirection
+    this.isGetLimit = false
     if (typeof startEvent === 'function') {
       this.startEvent(e)
     }
@@ -154,10 +155,7 @@ export default class Huarongdao {
     let {differX, differY, direction} = moveInfo
     let {lastDirection, lastDirectionNum} = lastInfo
 
-    // 未发生位移，不处理
-    if (lockDirection === '' && lastDirection === '') {
-      return false
-    }
+
     if (lockDirection === '') {
       lockDirection = lastDirection
     }
@@ -165,63 +163,144 @@ export default class Huarongdao {
       lastDirection = lockDirection
     }
 
+    // 未发生位移，不处理
+    if (lockDirection === '') {
+      return false
+    }
+
     if (lastDirection === lockDirection) {
-      this.toMove(lockDirection, differX, differY)
+      // 设置锁定信息
+      this.lockDirection = lockDirection
+      this.setLimitInfo()
+      this.updateDetial(differX, differY)
     } else {
       console.log('change move')
     }
-    this.lockDirection = lockDirection
 
-    // console.log('lastDirection: ', lastDirection)
 
     if (typeof moveEvent === 'function') {
       this.moveEvent(e)
     }
   }
 
-  toMove(direction, differX, differY) {
+  updateDetial(differX, differY){
     let {
       moveIndex,
+      maxInfo,
+      lockDirection,
       layout,
-      renderList,
-      spaceWidth
+      renderList
     } = this
-    let {left: currentLeft, top: currentTop, width: currentWidth, height: currentHeight} = renderList[moveIndex]
-    let {left: originLeft, top: originTop} = this.getRenderDetail(layout[moveIndex])
-    let nextLeft = originLeft + differX
-    let nextTop = originTop + differY
-    let moveDirection = ''
-    if(direction === 'h'){
-      moveDirection = nextLeft - currentLeft > 0 ? 'right' : 'left'
-      let findItem = renderList.find(({
-        left: itemLeft,
-        top: itemTop,
-        width: itemWidth,
-        height: itemHeight
-      })=>{
-        let isH = false
-        let isV = (itemTop >= currentTop && itemTop < currentTop + currentHeight) || (itemTop < currentTop && itemTop + itemHeight > currentTop)
-        if(moveDirection === 'right'){
-          isH = itemLeft > currentLeft + currentWidth && itemLeft - (currentLeft + currentWidth) <= spaceWidth
-        }
-        if(moveDirection === 'left'){
-          isH = itemLeft + itemWidth < currentLeft && currentLeft - (itemLeft + itemWidth)  <= spaceWidth
-        }
-        return isH && isV
-      })
-      console.log('findItem: ', findItem)
-      if(!findItem){
-        this.renderList[moveIndex].left = nextLeft
+    let {
+      max,
+      min
+    } = maxInfo
+    let {left, top} = this.getRenderDetail(layout[moveIndex])
+    let nextLeft = left + differX
+    let nextTop = top + differY
+    if(lockDirection === 'h'){
+      if(nextLeft < min){
+        nextLeft = min
       }
-
+      if(nextLeft > max){
+        nextLeft = max
+      }
+      this.renderList[moveIndex].left = nextLeft
     }
-    if(direction === 'v'){
-      moveDirection = nextTop - currentTop > 0 ? 'down' : 'up'
+    if(lockDirection === 'v'){
+      if(nextTop < min){
+        nextTop = min
+      }
+      if(nextTop > max){
+        nextTop = max
+      }
       this.renderList[moveIndex].top = nextTop
     }
   }
 
+  setLimitInfo(){
+    let {
+      moveIndex,
+      isGetLimit,
+      lockDirection,
+      layout,
+      renderList,
+      spaceWidth,
+      totalWidth,
+      totalHeight,
+      maxInfo
+    } = this
+    if(isGetLimit){
+      return false
+    }
+    let {
+      left: currentLeft,
+      top: currentTop,
+      width: currentWidth,
+      height: currentHeight
+    } = renderList[moveIndex]
+    let {left: originLeft, top: originTop} = this.getRenderDetail(layout[moveIndex])
 
+    let max = 0
+    let min = spaceWidth
+    let isFindRight = false
+    let isFindLeft = false
+    if(lockDirection === 'h'){
+      max = totalWidth - spaceWidth - currentWidth
+      renderList.forEach(({
+        left: itemLeft,
+        top: itemTop,
+        width: itemWidth,
+        height: itemHeight
+      }, index)=>{
+
+        let isRight = itemLeft > currentLeft + currentWidth
+        let isLeft = itemLeft + itemWidth < currentLeft
+        let isV = (itemTop >= currentTop && itemTop < currentTop + currentHeight) || (itemTop < currentTop && itemTop + itemHeight > currentTop)
+        if(isRight && isV){
+          let nextMax = itemLeft - spaceWidth - currentWidth
+          max = nextMax < max ? nextMax : max
+        }
+        if(isLeft && isV){
+          let nextMin = itemLeft + itemWidth + spaceWidth
+          min = nextMin > min ? nextMin : min
+        }
+      })
+
+      this.maxInfo = {
+        max,
+        min
+      }
+      this.isGetLimit = true
+    }
+    if(lockDirection === 'v'){
+      max = totalHeight - spaceWidth - currentHeight
+      renderList.forEach(({
+        left: itemLeft,
+        top: itemTop,
+        width: itemWidth,
+        height: itemHeight
+      }, index)=>{
+        let isDown = itemTop > currentTop + currentHeight
+        let isUp = itemTop + itemHeight < currentTop
+        let isH = (itemLeft >= currentLeft && itemLeft < currentLeft + currentWidth) || (itemLeft < currentLeft && itemLeft + itemWidth > currentLeft)
+        if(isDown && isH){
+          let nextMax = itemTop - spaceWidth - currentHeight
+          max = nextMax < max ? nextMax : max
+        }
+        if(isUp && isH){
+          let nextMin = itemTop + itemHeight + spaceWidth
+          min = nextMin > min ? nextMin : min
+        }
+      })
+
+      this.maxInfo = {
+        max,
+        min
+      }
+      this.isGetLimit = true
+    }
+  }
 
   /**
    * [onMove 滑动结束的处理]
@@ -233,228 +312,6 @@ export default class Huarongdao {
     }
     if (typeof endEvent === 'function') {
       this.endEvent()
-    }
-  }
-
-  /**
-   * [setIndex 设置当前操作元素在renderList中的下标值]
-   * @param {Number} index [下标值]
-   */
-  // setIndex(index) {
-  //   this.currentIndex = index
-  //
-  //    初始化元素位移锁定方向
-  //   this.lockDirection = ''
-  // }
-
-  updateRender(info) {
-    let realDirection = this.getMoveDirection(info)
-    let {differX, differY} = info
-    this.setPosition(realDirection, differX, differY)
-  }
-
-  getMoveDirection({lastDirection, differX, differY}) {
-    let {lockDirection, currentIndex, renderList, spaceWidth} = this
-    let {
-      x,
-      y,
-      hSize,
-      vSize,
-      left: currentLeft,
-      top: currentTop
-    } = renderList[currentIndex]
-    let {left, top} = this.getRenderInfo({x, y, hSize, vSize})
-
-    if (lockDirection === '') {
-      lockDirection = lastDirection
-    }
-
-    if (lastDirection === '') {
-      lastDirection = lockDirection
-    }
-
-    if (lockDirection !== '' && lockDirection !== lastDirection) {
-      let nextDiffH = Math.abs(left + differX - currentLeft)
-      let nextDiffV = Math.abs(top + differY - currentTop)
-      let minChangeNum = spaceWidth * 2
-      if ((lastDirection === 'h' && nextDiffH > minChangeNum) || (lastDirection === 'v' && nextDiffV > minChangeNum)) {
-        lockDirection = lastDirection
-      }
-    }
-    return lockDirection
-  }
-
-  setPosition(direction, differX = 0, differY = 0) {
-    if (direction === '') {
-      return false
-    }
-    let {
-      lockDirection,
-      singleWidth,
-      currentIndex,
-      renderList,
-      spaceWidth,
-      totalWidth,
-      totalHeight
-    } = this
-    let {
-      x,
-      y,
-      hSize,
-      vSize,
-      width,
-      height,
-      left: currentLeft,
-      top: currentTop
-    } = renderList[currentIndex]
-    let {left, top} = this.getRenderInfo({x, y, hSize, vSize})
-    let nextLeft = parseInt(left + differX)
-    let nextTop = parseInt(top + differY)
-    let maxH = parseInt(totalWidth - spaceWidth)
-    let maxV = parseInt(totalHeight - spaceWidth)
-    // let isCanMove = false
-    // let isChanged = lockDirection === direction
-
-    if (direction === 'h') {
-      if (nextLeft < spaceWidth) {
-        nextLeft = spaceWidth
-      }
-      if (nextLeft + width > maxH) {
-        nextLeft = maxH - width
-      }
-
-      let hadOne = true
-
-      if (differX > 0) { // right
-        hadOne = renderList.some(({left: itemLeft, top: itemTop, width: itemWidth, height: itemHeight}) => {
-          let isFind = false
-          if (itemLeft > currentLeft + width && itemLeft - (currentLeft + width) < spaceWidth) {
-            if (itemTop <= currentTop && itemTop + itemHeight > currentTop) {
-              isFind = true
-            }
-            if (itemTop > currentTop && itemTop < currentTop + height) {
-              isFind = true
-            }
-          }
-          return isFind
-        })
-
-        if (!hadOne) {
-          this.renderList[currentIndex].left = nextLeft
-        }
-      } else { // left
-        hadOne = renderList.some(({left: itemLeft, top: itemTop, width: itemWidth, height: itemHeight}) => {
-          let isFind = false
-          if (itemLeft + itemWidth < currentLeft && currentLeft - (itemLeft + itemWidth) < spaceWidth) {
-            if (itemTop <= currentTop && itemTop + itemHeight > currentTop) {
-              isFind = true
-            }
-            if (itemTop > currentTop && itemTop < currentTop + height) {
-              isFind = true
-            }
-          }
-          return isFind
-        })
-
-        if (!hadOne) {
-          this.renderList[currentIndex].left = nextLeft
-        }
-      }
-    }
-
-    if (direction === 'v') {
-      if (nextTop < spaceWidth) {
-        nextTop = spaceWidth
-      }
-      if (nextTop + height > maxV) {
-        nextTop = maxV - height
-      }
-
-      let hadOne = true
-
-      if (differY > 0) { // down
-        hadOne = renderList.some(({left: itemLeft, top: itemTop, width: itemWidth, height: itemHeight}) => {
-          let isFind = false
-          if (itemTop > currentTop + height && itemTop - (currentTop + height) < spaceWidth) {
-
-            if (itemLeft <= currentLeft && itemLeft + itemWidth > currentLeft) {
-              isFind = true
-            }
-            if (itemLeft > currentLeft && itemLeft < currentLeft + width) {
-              isFind = true
-            }
-          }
-          return isFind
-        })
-
-        if (!hadOne) {
-          this.renderList[currentIndex].top = nextTop
-        }
-      } else { // up
-        hadOne = renderList.some(({left: itemLeft, top: itemTop, width: itemWidth, height: itemHeight}) => {
-          let isFind = false
-          if (itemTop + itemHeight < currentTop && currentTop - (itemTop + itemHeight) < spaceWidth) {
-
-            if (itemLeft <= currentLeft && itemLeft + itemWidth > currentLeft) {
-              isFind = true
-            }
-            if (itemLeft > currentLeft && itemLeft < currentLeft + width) {
-              isFind = true
-            }
-          }
-          return isFind
-        })
-
-        if (!hadOne) {
-          this.renderList[currentIndex].top = nextTop
-        }
-      }
-    }
-    this.lockDirection = lockDirection
-  }
-
-  stopMove() {
-    let {currentIndex, renderList, layout} = this
-    let {left, top} = renderList[currentIndex]
-    let {x, y} = this.getPosition(left, top)
-    layout[currentIndex].x = x
-    layout[currentIndex].y = y
-    this.getRender(layout)
-    if (typeof this.updatePosition === 'function') {
-      this.updatePosition()
-    }
-  }
-
-  changePosition(direction, differX, differY) {
-    let {currentIndex, renderList, lockDirection} = this
-    let {
-      x,
-      y,
-      hSize,
-      vSize,
-      left: preLeft,
-      top: preTop
-    } = renderList[currentIndex]
-    let {left, top} = this.getRenderInfo({x, y, hSize, vSize})
-    // let nextLeft = preLeft
-    // let nextTop = preTop
-    let nextLeft = left + differX
-    let nextTop = top + differY
-    this.lockDirection = lockDirection
-    if (direction === 'h') {
-      if (differX < 0) {
-        // console.log('left')
-      }
-      nextLeft = left + differX
-      this.renderList[currentIndex].left = nextLeft
-    }
-    if (direction === 'v') {
-      nextTop = top + differY
-      this.renderList[currentIndex].top = nextTop
-    }
-
-    if (typeof this.updatePosition === 'function') {
-      this.updatePosition()
     }
   }
 
