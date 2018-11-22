@@ -106,7 +106,7 @@ export default {
       totalHeight: 0,
       swipe: null,
       huarongdao: null,
-      isTrans: true,
+      isTrans: false,
       indexRole: -1
     }
   },
@@ -118,24 +118,27 @@ export default {
     } = this
     this.$nextTick(() => {
       let ele = document.querySelector('#roles')
-      let width = parseInt(document.defaultView.getComputedStyle(ele, null).width)
+      // let totalWidth = parseInt(document.defaultView.getComputedStyle(ele, null).width)
       let huarongdao = new Huarongdao({
+        ele,
         roles,
+        layout,
+        datasetKey: 'index',
         hSize: 4,
         vSize: 5,
-        spaceScale,
-        width
+        spaceScale
       })
 
       huarongdao.updatePosition = ()=>{
         this.setLayout()
       }
-      huarongdao.setRenderList(layout)
-      let {totalHeight} = huarongdao
+      // huarongdao.setRenderList(layout)
+      let {totalHeight, renderList} = huarongdao
       this.totalHeight = totalHeight
       this.huarongdao = huarongdao
-      this.setLayout()
-      this.setSwipe()
+      this.renderList = renderList
+      // this.setLayout()
+      // this.setSwipe()
     })
 
   },
@@ -182,7 +185,7 @@ export default {
           lastDirection,
           lastDirectionNum
         } = lastInfo
-        huarongdao.updateRender({
+        huarongdao.moveRole({
           lastDirection,
           differX,
           differY,
@@ -190,56 +193,10 @@ export default {
         })
       }
       swipe.end = () => {
-        // let {
-        //   indexRole,
-        //   layout
-        // } = this
-        // this.isTrans = true
-        // let {
-        //   left,
-        //   top
-        // } = renderList[indexRole]
-        // let {
-        //   x,
-        //   y
-        // } = huarongdao.getPosition(left, top)
-
-        // if (endX >= 0) {
-        // this.layout[indexRole].x = x
-        // }
-        // if (endY >= 0) {
-        // this.layout[indexRole].y = y
-        // }
-        //
-        // huarongdao.setRenderList(layout)
-        // let {
-        //   renderList: changeList
-        // } = huarongdao
-        // console.log(changeList)
-        // this.renderList = changeList
+        this.stopMove()
       }
 
       this.swipe = swipe
-    },
-    setPosition(direction, differX, differY) {
-      let {
-        indexRole,
-        swipe
-      } = this
-      let {
-        left,
-        top
-      } = swipe.position
-      let {
-        maxLeft,
-        maxTop
-      } = swipe.getLimit(direction, differX, differY)
-      if (direction === 'h') {
-        this.renderList[indexRole].left = left + differX
-      }
-      if (direction === 'v') {
-        this.renderList[indexRole].top = top + differY
-      }
     },
     setIndex(index){
       let {
@@ -263,6 +220,12 @@ export default {
         renderList
       } = huarongdao
       this.renderList = renderList
+    },
+    stopMove(){
+      let {
+        huarongdao
+      } = this
+      huarongdao.stopMove()
     }
   }
 }

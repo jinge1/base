@@ -1,12 +1,18 @@
-// 请求基类，可根据实际需要进行扩展
-export default class TouchEvent {
-  // element  绑定touch事件的元素
+
+/**
+ * [VSwipe 滑动事件基类]
+ */
+export default class VSwipe {
+  /**
+   * [constructor 初始化]
+   * @param {[type]} element       [事件元素或者querySelector字符串]
+   * @param {Number} [disTime=100] [每隔disTime事件间隔统计一次最后的运动数据]
+   * @param {Number} [minNum=7]    [最小运动临界值值，小于这个值则认为未运动]
+   */
   constructor(element, disTime = 100, minNum = 7) {
 
-    // 存储最后一段间隔事件的数据
     this.disTime = disTime
 
-    // minNum  最小运动临界值值，小于这个值则认为未运动
     this.minNum = minNum
 
     // 绑定事件元素
@@ -47,7 +53,7 @@ export default class TouchEvent {
     return supportEvents
   }
 
-  // touch事件绑定
+  // 事件绑定
   bindEvent() {
     let {ele, supportEvents} = this
     let {startEvent, moveEvent, endEvent} = supportEvents
@@ -58,9 +64,9 @@ export default class TouchEvent {
     ele.addEventListener(endEvent, this.eventEnd.bind(this), false)
   }
 
-  // 事件开始时的处理
+  // 事件开始时的初始化处理
   eventStart(e) {
-    // 记录事件吃否开始
+    // 标记事件是否开始
     this.isEventStart = true
 
     // 记录是否需要阻止默认事件
@@ -93,11 +99,13 @@ export default class TouchEvent {
       directionNum: 0
     }
 
+    // 运动最大位移数据
     this.maxInfo = {
       maxX: 0,
       maxY: 0
     }
 
+    // 最后事件间隔数据
     this.lastInfo = {
       // 记录开始时间
       lastTime: now,
@@ -234,7 +242,7 @@ export default class TouchEvent {
   getPosition(dragDirection = 'y') {
     let {position} = this
     let {left, top} = position
-    let {direction, differNum, differX, differY} = this.moveInfo
+    let {direction, differNum} = this.moveInfo
     if (direction === 'h') {
       left = left + differNum
     }
