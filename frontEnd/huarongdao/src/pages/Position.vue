@@ -129,9 +129,13 @@ export default {
         spaceScale
       })
 
-      huarongdao.updatePosition = ()=>{
+      huarongdao.update = ()=>{
         this.setLayout()
       }
+      huarongdao.endEvent = ()=>{
+        this.setLayout()
+      }
+
       // huarongdao.setRenderList(layout)
       let {totalHeight, renderList} = huarongdao
       this.totalHeight = totalHeight

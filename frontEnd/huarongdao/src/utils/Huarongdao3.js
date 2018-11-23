@@ -145,20 +145,22 @@ export default class Huarongdao {
    * @param  {Object} e [事件对象]
    */
   onMove(e) {
-    let {lockDirection, moveIndex, moveEvent, hSwipe} = this
+    let {lockDirection, moveIndex, moveEvent, hSwipe, isGetLimit} = this
 
     if (moveIndex < 0) {
       return false
     }
 
     let {moveInfo, lastInfo} = hSwipe
-    let {differX, differY, direction} = moveInfo
-    let {lastDirection, lastDirectionNum} = lastInfo
+    let {differX, differY} = moveInfo
+    let {lastDirection} = lastInfo
 
-
+    // 锁定方向设置
     if (lockDirection === '') {
       lockDirection = lastDirection
     }
+
+    // 修正运动方向（lastDirection可能为空）
     if (lastDirection === '') {
       lastDirection = lockDirection
     }
@@ -171,9 +173,16 @@ export default class Huarongdao {
     if (lastDirection === lockDirection) {
       // 设置锁定信息
       this.lockDirection = lockDirection
-      this.setLimitInfo()
-      this.updateDetial(differX, differY)
+      if(!isGetLimit){
+        // let limitInfo = this.getLimitInfo(lockDirection)
+        this.limitInfo = this.getLimitInfo(lockDirection)
+        this.isGetLimit = true
+      }
+
+
+      this.updatePosition(differX, differY)
     } else {
+      let isCanbeChange = this.getChangeInfo(lastDirection, differX, differY)
       console.log('change move')
     }
 
@@ -183,18 +192,84 @@ export default class Huarongdao {
     }
   }
 
-  updateDetial(differX, differY){
+  getChangeInfo(lastDirection, differX, differY){
     let {
       moveIndex,
-      maxInfo,
+      layout,
+      lockDirection,
+      renderList,
+      singleWidth,
+      spaceWidth
+    } = this
+    let {
+      left: currentLeft,
+      top: currentTop,
+      width: currentWidth,
+      height: currentHeight
+    } = renderList[moveIndex]
+    let {left, top} = this.getRenderDetail(layout[moveIndex])
+
+    let nextLeft = left + differX
+    let nextTop = top + differY
+
+    if(lastDirection === 'h'){
+      // 计算距离单位长度的差距
+      let disH = currentTop/(spaceWidth + singleWidth)
+      disH = Math.abs( Math.round(disH) - disH ) * (spaceWidth + singleWidth)
+      if( parseInt(disH) <= spaceWidth * 1.5 ){
+        let limitInfo = this.getLimitInfo(lastDirection)
+        let {
+          min,
+          max
+        } = limitInfo
+        // right
+        if((nextLeft - currentLeft < 0 ) && currentLeft > min || (nextLeft - currentLeft > 0 && currentLeft < max)){
+          console.log('yes')
+        }else{
+          console.log('no')
+        }
+      }else{
+        console.log('no')
+        // return false
+      }
+    }
+
+    if(lastDirection === 'v'){
+      // 计算距离单位长度的差距
+      let disV = currentLeft/(spaceWidth + singleWidth)
+      disV = Math.abs( Math.round(disV) - disV ) * (spaceWidth + singleWidth)
+      if( parseInt(disV) <= spaceWidth * 1.5 ){
+        let limitInfo = this.getLimitInfo(lastDirection)
+        let {
+          min,
+          max
+        } = limitInfo
+        // right
+        if((nextTop - currentTop < 0 ) && currentTop > min || (nextTop - currentTop > 0 && currentTop < max)){
+          console.log('yes')
+        }else{
+          console.log('no')
+        }
+      }else{
+        console.log('no')
+        // return false
+      }
+    }
+
+  }
+
+  updatePosition(differX, differY){
+    let {
+      moveIndex,
+      limitInfo,
       lockDirection,
       layout,
-      renderList
+      update
     } = this
     let {
       max,
       min
-    } = maxInfo
+    } = limitInfo
     let {left, top} = this.getRenderDetail(layout[moveIndex])
     let nextLeft = left + differX
     let nextTop = top + differY
@@ -206,6 +281,10 @@ export default class Huarongdao {
         nextLeft = max
       }
       this.renderList[moveIndex].left = nextLeft
+
+      if (typeof update === 'function') {
+        this.update()
+      }
     }
     if(lockDirection === 'v'){
       if(nextTop < min){
@@ -215,37 +294,31 @@ export default class Huarongdao {
         nextTop = max
       }
       this.renderList[moveIndex].top = nextTop
+      if (typeof update === 'function') {
+        this.update()
+      }
     }
   }
 
-  setLimitInfo(){
+  getLimitInfo(direction){
     let {
       moveIndex,
-      isGetLimit,
-      lockDirection,
-      layout,
       renderList,
       spaceWidth,
       totalWidth,
-      totalHeight,
-      maxInfo
+      totalHeight
     } = this
-    if(isGetLimit){
-      return false
-    }
     let {
       left: currentLeft,
       top: currentTop,
       width: currentWidth,
       height: currentHeight
     } = renderList[moveIndex]
-    let {left: originLeft, top: originTop} = this.getRenderDetail(layout[moveIndex])
 
     let max = 0
     let min = spaceWidth
-    let isFindRight = false
-    let isFindLeft = false
-    if(lockDirection === 'h'){
+    let limitInfo = {}
+    if(direction === 'h'){
       max = totalWidth - spaceWidth - currentWidth
       renderList.forEach(({
         left: itemLeft,
@@ -267,13 +340,12 @@ export default class Huarongdao {
         }
       })
 
-      this.maxInfo = {
+      limitInfo = {
         max,
         min
       }
-      this.isGetLimit = true
     }
-    if(lockDirection === 'v'){
+    if(direction === 'v'){
       max = totalHeight - spaceWidth - currentHeight
       renderList.forEach(({
         left: itemLeft,
@@ -294,32 +366,45 @@ export default class Huarongdao {
         }
       })
 
-      this.maxInfo = {
+      limitInfo = {
         max,
         min
       }
-      this.isGetLimit = true
     }
+    return limitInfo
   }
 
   /**
    * [onMove 滑动结束的处理]
    */
   endMove() {
-    let {moveIndex} = this
+    let {
+      moveIndex,
+      renderList,
+      singleWidth,
+      spaceWidth
+    } = this
     if (moveIndex < 0) {
       return false
     }
+
+    let {left, top, role} = renderList[moveIndex]
+    let x = Math.round(left / (singleWidth + spaceWidth))
+    let y = Math.round(top / (singleWidth + spaceWidth))
+
+    let {left: nextLeft, top: nextTop} = this.getRenderDetail({
+      role,
+      x,
+      y
+    })
+
+    this.layout[moveIndex].x = x
+    this.layout[moveIndex].y = y
+    this.renderList[moveIndex].left = nextLeft
+    this.renderList[moveIndex].top = nextTop
+
     if (typeof endEvent === 'function') {
       this.endEvent()
-    }
-  }
-
-  getPosition(left, top) {
-    let {spaceWidth, singleWidth} = this
-    return {
-      x: Math.round(left / (singleWidth + spaceWidth)),
-      y: Math.round(top / (singleWidth + spaceWidth))
     }
   }
 
