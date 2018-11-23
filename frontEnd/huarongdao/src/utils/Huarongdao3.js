@@ -174,16 +174,13 @@ export default class Huarongdao {
       // 设置锁定信息
       this.lockDirection = lockDirection
       if(!isGetLimit){
-        // let limitInfo = this.getLimitInfo(lockDirection)
         this.limitInfo = this.getLimitInfo(lockDirection)
         this.isGetLimit = true
       }
-
-
       this.updatePosition(differX, differY)
     } else {
-      let isCanbeChange = this.getChangeInfo(lastDirection, differX, differY)
-      console.log('change move')
+      this.setChangeInfo(lastDirection, differX, differY)
+      this.updatePosition(differX, differY)
     }
 
 
@@ -192,7 +189,7 @@ export default class Huarongdao {
     }
   }
 
-  getChangeInfo(lastDirection, differX, differY){
+  setChangeInfo(lastDirection, differX, differY){
     let {
       moveIndex,
       layout,
@@ -214,45 +211,37 @@ export default class Huarongdao {
 
     if(lastDirection === 'h'){
       // 计算距离单位长度的差距
-      let disH = currentTop/(spaceWidth + singleWidth)
-      disH = Math.abs( Math.round(disH) - disH ) * (spaceWidth + singleWidth)
+      let HNum = currentTop/(spaceWidth + singleWidth)
+      let disH = Math.abs( Math.round(HNum) - HNum ) * (spaceWidth + singleWidth)
       if( parseInt(disH) <= spaceWidth * 1.5 ){
         let limitInfo = this.getLimitInfo(lastDirection)
         let {
           min,
           max
         } = limitInfo
-        // right
         if((nextLeft - currentLeft < 0 ) && currentLeft > min || (nextLeft - currentLeft > 0 && currentLeft < max)){
-          console.log('yes')
-        }else{
-          console.log('no')
+          this.limitInfo = limitInfo
+          this.renderList[moveIndex].top = Math.round(HNum) * (spaceWidth + singleWidth) + spaceWidth
+          this.lockDirection = lastDirection
         }
-      }else{
-        console.log('no')
-        // return false
       }
     }
 
     if(lastDirection === 'v'){
       // 计算距离单位长度的差距
-      let disV = currentLeft/(spaceWidth + singleWidth)
-      disV = Math.abs( Math.round(disV) - disV ) * (spaceWidth + singleWidth)
+      let Vnum = currentLeft/(spaceWidth + singleWidth)
+      let disV = Math.abs( Math.round(Vnum) - Vnum ) * (spaceWidth + singleWidth)
       if( parseInt(disV) <= spaceWidth * 1.5 ){
         let limitInfo = this.getLimitInfo(lastDirection)
         let {
           min,
           max
         } = limitInfo
-        // right
         if((nextTop - currentTop < 0 ) && currentTop > min || (nextTop - currentTop > 0 && currentTop < max)){
-          console.log('yes')
-        }else{
-          console.log('no')
+          this.limitInfo = limitInfo
+          this.renderList[moveIndex].top = Math.round(Vnum) * (spaceWidth + singleWidth) + spaceWidth
+          this.lockDirection = lastDirection
         }
-      }else{
-        console.log('no')
-        // return false
       }
     }
 
