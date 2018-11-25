@@ -221,6 +221,7 @@ export default class Huarongdao {
         } = limitInfo
         if((nextLeft - currentLeft < 0 ) && currentLeft > min || (nextLeft - currentLeft > 0 && currentLeft < max)){
           this.limitInfo = limitInfo
+          console.log(Math.round(HNum))
           this.renderList[moveIndex].top = Math.round(HNum) * (spaceWidth + singleWidth) + spaceWidth
           this.lockDirection = lastDirection
         }
@@ -239,7 +240,7 @@ export default class Huarongdao {
         } = limitInfo
         if((nextTop - currentTop < 0 ) && currentTop > min || (nextTop - currentTop > 0 && currentTop < max)){
           this.limitInfo = limitInfo
-          this.renderList[moveIndex].top = Math.round(Vnum) * (spaceWidth + singleWidth) + spaceWidth
+          this.renderList[moveIndex].left = Math.round(Vnum) * (spaceWidth + singleWidth) + spaceWidth
           this.lockDirection = lastDirection
         }
       }
