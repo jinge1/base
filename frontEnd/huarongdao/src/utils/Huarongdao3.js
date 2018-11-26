@@ -104,6 +104,7 @@ export default class Huarongdao {
     let hSwipe = new Swipe(ele)
 
     hSwipe.start = (e) => {
+      this.moveIndex = -1
       this.beforeMove(e)
     }
 
@@ -124,6 +125,7 @@ export default class Huarongdao {
    */
   beforeMove(e) {
     let {datasetKey, startEvent} = this
+
     let index = -1
     let lockDirection = ''
     if (e && e.target) {
@@ -132,9 +134,11 @@ export default class Huarongdao {
         index = datasetIndex
       }
     }
+
     this.moveIndex = index
     this.lockDirection = lockDirection
     this.isGetLimit = false
+
     if (typeof startEvent === 'function') {
       this.startEvent(e)
     }
@@ -146,7 +150,6 @@ export default class Huarongdao {
    */
   onMove(e) {
     let {lockDirection, moveIndex, moveEvent, hSwipe, isGetLimit} = this
-
     if (moveIndex < 0) {
       return false
     }
@@ -173,88 +176,32 @@ export default class Huarongdao {
     if (lastDirection === lockDirection) {
       // 设置锁定信息
       this.lockDirection = lockDirection
-      if(!isGetLimit){
+      if(!isGetLimit){  // 如果未获取可滑动极限值，则先获取
         this.limitInfo = this.getLimitInfo(lockDirection)
         this.isGetLimit = true
       }
-      this.updatePosition(differX, differY)
+      this.changeRender(differX, differY)
     } else {
       this.setChangeInfo(lastDirection, differX, differY)
-      this.updatePosition(differX, differY)
+      this.changeRender(differX, differY)
     }
-
 
     if (typeof moveEvent === 'function') {
       this.moveEvent(e)
     }
   }
 
-  setChangeInfo(lastDirection, differX, differY){
-    let {
-      moveIndex,
-      layout,
-      lockDirection,
-      renderList,
-      singleWidth,
-      spaceWidth
-    } = this
-    let {
-      left: currentLeft,
-      top: currentTop,
-      width: currentWidth,
-      height: currentHeight
-    } = renderList[moveIndex]
-    let {left, top} = this.getRenderDetail(layout[moveIndex])
-
-    let nextLeft = left + differX
-    let nextTop = top + differY
-
-    if(lastDirection === 'h'){
-      // 计算距离单位长度的差距
-      let HNum = currentTop/(spaceWidth + singleWidth)
-      let disH = Math.abs( Math.round(HNum) - HNum ) * (spaceWidth + singleWidth)
-      if( parseInt(disH) <= spaceWidth * 1.5 ){
-        let limitInfo = this.getLimitInfo(lastDirection)
-        let {
-          min,
-          max
-        } = limitInfo
-        if((nextLeft - currentLeft < 0 ) && currentLeft > min || (nextLeft - currentLeft > 0 && currentLeft < max)){
-          this.limitInfo = limitInfo
-          console.log(Math.round(HNum))
-          this.renderList[moveIndex].top = Math.round(HNum) * (spaceWidth + singleWidth) + spaceWidth
-          this.lockDirection = lastDirection
-        }
-      }
-    }
-
-    if(lastDirection === 'v'){
-      // 计算距离单位长度的差距
-      let Vnum = currentLeft/(spaceWidth + singleWidth)
-      let disV = Math.abs( Math.round(Vnum) - Vnum ) * (spaceWidth + singleWidth)
-      if( parseInt(disV) <= spaceWidth * 1.5 ){
-        let limitInfo = this.getLimitInfo(lastDirection)
-        let {
-          min,
-          max
-        } = limitInfo
-        if((nextTop - currentTop < 0 ) && currentTop > min || (nextTop - currentTop > 0 && currentTop < max)){
-          this.limitInfo = limitInfo
-          this.renderList[moveIndex].left = Math.round(Vnum) * (spaceWidth + singleWidth) + spaceWidth
-          this.lockDirection = lastDirection
-        }
-      }
-    }
-
-  }
-
-  updatePosition(differX, differY){
+  /**
+   * [changeRender 更新位置信息]
+   * @param  {Number} differX [水平位移距离，相对于起始位置]
+   * @param  {Number} differY [垂直位移距离，相对于起始位置]
+   */
+  changeRender(differX, differY){
     let {
       moveIndex,
       limitInfo,
       lockDirection,
-      layout,
-      update
+      layout
     } = this
     let {
       max,
@@ -271,10 +218,7 @@ export default class Huarongdao {
         nextLeft = max
       }
       this.renderList[moveIndex].left = nextLeft
-
-      if (typeof update === 'function') {
-        this.update()
-      }
+      this.updatePosition()
     }
     if(lockDirection === 'v'){
       if(nextTop < min){
@@ -284,12 +228,90 @@ export default class Huarongdao {
         nextTop = max
       }
       this.renderList[moveIndex].top = nextTop
-      if (typeof update === 'function') {
-        this.update()
-      }
+      this.updatePosition()
     }
   }
 
+  /**
+   * [updatePosition 更新坐标后的回调事件处理]
+   */
+  updatePosition(){
+    let {update} = this
+    if (typeof update === 'function') {
+      this.update()
+    }
+  }
+
+  /**
+   * [setChangeInfo 判断是否需要改变运动方向，并设置该变量]
+   * @param {String} lastDirection [改变运动的方向，h: 水平方向，v: 垂直方向]
+   * @param {Number} differX       [水平偏移量]
+   * @param {Number} differY       [垂直偏移量]
+   */
+  setChangeInfo(lastDirection, differX, differY){
+    let {
+      moveIndex,
+      layout,
+      renderList,
+      singleWidth,
+      spaceWidth
+    } = this
+    let {
+      left: currentLeft,
+      top: currentTop
+    } = renderList[moveIndex]
+    let {left, top} = this.getRenderDetail(layout[moveIndex])
+
+    let nextLeft = left + differX
+    let nextTop = top + differY
+
+    if(lastDirection === 'h'){
+      // 计算距离最近单位长度的差距
+      let changeH = Math.round( currentTop/(spaceWidth + singleWidth) )
+      let changeNum = Math.abs( changeH * (spaceWidth + singleWidth) - currentTop)
+      if( changeNum <= spaceWidth ){
+        let limitInfo = this.getLimitInfo(lastDirection)
+        let {
+          min,
+          max
+        } = limitInfo
+        if((nextLeft - currentLeft < 0 ) && currentLeft > min || (nextLeft - currentLeft > 0 && currentLeft < max)){
+          this.limitInfo = limitInfo
+          // 修正纵轴坐标
+          this.renderList[moveIndex].top = changeH * (spaceWidth + singleWidth) + spaceWidth
+          this.lockDirection = lastDirection
+          this.updatePosition()
+        }
+      }
+    }
+
+    if(lastDirection === 'v'){
+      // 计算距离最近单位长度的差距
+      let changeV = Math.round( currentLeft/(spaceWidth + singleWidth) )
+      let changeNum = Math.abs( changeV * (spaceWidth + singleWidth) - currentLeft)
+      if( changeNum <= spaceWidth * 1.5 ){
+        let limitInfo = this.getLimitInfo(lastDirection)
+        let {
+          min,
+          max
+        } = limitInfo
+        if((nextTop - currentTop < 0 ) && currentTop > min || (nextTop - currentTop > 0 && currentTop < max)){
+          this.limitInfo = limitInfo
+          // 修正纵轴坐标
+          this.renderList[moveIndex].left = changeV * (spaceWidth + singleWidth) + spaceWidth
+          this.lockDirection = lastDirection
+          this.updatePosition()
+        }
+      }
+    }
+
+  }
+
+  /**
+   * [getLimitInfo 判断当前元素在某个运动方向的极限值]
+   * @param  {String} direction [运动方形， h: 横轴，v: 纵轴]
+   * @return {Object}           [极限值数据]
+   */
   getLimitInfo(direction){
     let {
       moveIndex,
@@ -309,6 +331,7 @@ export default class Huarongdao {
     let min = spaceWidth
     let limitInfo = {}
     if(direction === 'h'){
+      // 查找横轴可能阻挡元素的最邻近坐标值，以此来确定可移动范围
       max = totalWidth - spaceWidth - currentWidth
       renderList.forEach(({
         left: itemLeft,
@@ -316,15 +339,17 @@ export default class Huarongdao {
         width: itemWidth,
         height: itemHeight
       }, index)=>{
-
+        // 右侧元素的横轴满足条件
         let isRight = itemLeft > currentLeft + currentWidth
+        // 横轴元素的横轴满足条件
         let isLeft = itemLeft + itemWidth < currentLeft
+        // 可能阻挡元素的纵轴满足条件
         let isV = (itemTop >= currentTop && itemTop < currentTop + currentHeight) || (itemTop < currentTop && itemTop + itemHeight > currentTop)
-        if(isRight && isV){
+        if(isRight && isV){ // 找出右侧首个阻挡元素的横坐标
           let nextMax = itemLeft - spaceWidth - currentWidth
           max = nextMax < max ? nextMax : max
         }
-        if(isLeft && isV){
+        if(isLeft && isV){ // 找出左侧首个阻挡元素的横坐标
           let nextMin = itemLeft + itemWidth + spaceWidth
           min = nextMin > min ? nextMin : min
         }
@@ -335,7 +360,9 @@ export default class Huarongdao {
         min
       }
     }
+
     if(direction === 'v'){
+      // 查找纵轴可能阻挡元素的最邻近坐标值，以此来确定可移动范围
       max = totalHeight - spaceWidth - currentHeight
       renderList.forEach(({
         left: itemLeft,
@@ -361,6 +388,7 @@ export default class Huarongdao {
         min
       }
     }
+
     return limitInfo
   }
 
@@ -372,10 +400,14 @@ export default class Huarongdao {
       moveIndex,
       renderList,
       singleWidth,
-      spaceWidth
+      spaceWidth,
+      beforeEnd
     } = this
     if (moveIndex < 0) {
       return false
+    }
+    if (typeof beforeEnd === 'function') {
+      this.beforeEnd()
     }
 
     let {left, top, role} = renderList[moveIndex]

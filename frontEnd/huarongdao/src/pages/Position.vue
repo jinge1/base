@@ -79,11 +79,11 @@ export default {
           x: 0,
           y: 1
         },
-        {
-          role: 4,
-          x: 1,
-          y: 1
-        },
+        // {
+        //   role: 4,
+        //   x: 1,
+        //   y: 1
+        // },
 
         // {
         //   role: 5,
@@ -118,7 +118,6 @@ export default {
     } = this
     this.$nextTick(() => {
       let ele = document.querySelector('#roles')
-      // let totalWidth = parseInt(document.defaultView.getComputedStyle(ele, null).width)
       let huarongdao = new Huarongdao({
         ele,
         roles,
@@ -128,94 +127,28 @@ export default {
         vSize: 5,
         spaceScale
       })
-
+      huarongdao.startEvent = (e)=>{
+        this.isTrans = false
+      }
       huarongdao.update = ()=>{
         this.setLayout()
       }
+      huarongdao.beforeEnd = ()=>{
+        this.isTrans = true
+      }
+
       huarongdao.endEvent = ()=>{
         this.setLayout()
       }
 
-      // huarongdao.setRenderList(layout)
       let {totalHeight, renderList} = huarongdao
       this.totalHeight = totalHeight
       this.huarongdao = huarongdao
-      this.renderList = renderList
-      // this.setLayout()
-      // this.setSwipe()
+      this.setLayout()
     })
 
   },
   methods: {
-    setSwipe() {
-      let swipe = new VSwipe('#roles')
-      let preDirection = ''
-      let {
-        renderList,
-        huarongdao
-      } = this
-      swipe.start = (e) => {
-        let index = e.target.dataset.index
-        if (!isNaN(index)) {
-          let {
-            left,
-            top
-          } = renderList[index]
-          this.isTrans = false
-          this.setIndex(index)
-          this.setLayout()
-        } else {
-          this.indexRole = -1
-        }
-      }
-      swipe.move = (e) => {
-        let {
-          indexRole,
-          renderList
-        } = this
-        if (indexRole === -1) {
-          return false
-        }
-        let {
-          moveInfo,
-          lastInfo
-        } = swipe
-        let {
-          differX,
-          differY,
-          direction
-        } = moveInfo
-        let {
-          lastDirection,
-          lastDirectionNum
-        } = lastInfo
-        huarongdao.moveRole({
-          lastDirection,
-          differX,
-          differY,
-          lastDirectionNum
-        })
-      }
-      swipe.end = () => {
-        this.stopMove()
-      }
-
-      this.swipe = swipe
-    },
-    setIndex(index){
-      let {
-        swipe,
-        huarongdao,
-        renderList
-      } = this
-      let {
-        left,
-        top
-      } = renderList[index]
-      this.indexRole = index
-      // swipe.setStartPosition(left, top)
-      huarongdao.setIndex(index)
-    },
     setLayout(){
       let {
         huarongdao
@@ -224,12 +157,6 @@ export default {
         renderList
       } = huarongdao
       this.renderList = renderList
-    },
-    stopMove(){
-      let {
-        huarongdao
-      } = this
-      huarongdao.stopMove()
     }
   }
 }
