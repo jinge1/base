@@ -67,7 +67,7 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin([resolve('dll')], {root: resolve('/')}),
     new VueLoaderPlugin(),
-    new MiniCssExtractPlugin({filename: 'style/[name].[contenthash:8].css'}),
+    new MiniCssExtractPlugin({filename: 'style/[name].v1.css'}),
     new webpack.DllPlugin({
       path: resolve('dll/[name]_manifest.v1.json'),
       // path.join(__dirname, 'dist', '[name]-manifest.json'),

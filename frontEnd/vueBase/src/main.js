@@ -1,7 +1,9 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-import './public/reset'
+
+// dll已提取，直接在html中引入即可
+// import './public/reset'
 
 new Vue({
   el: '#app',
