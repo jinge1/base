@@ -7,8 +7,5 @@
       },
       "useBuiltIns": "usage"
     }]
-  ],
-  "env": [
-    "@babel/preset-env"
   ]
 }

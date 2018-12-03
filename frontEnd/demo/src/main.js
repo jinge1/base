@@ -1,4 +1,4 @@
-
+import greeter from './utils/greeter'
 
 
 function pro(){
@@ -15,3 +15,5 @@ async function asy(){
 }
 
 asy()
+
+console.log(greeter('string2'))
