@@ -3,6 +3,6 @@ import 'vue-router'
 import 'vuex'
 // import  'element-ui'
 
-import './components/Loading'
+// import './components/Loading'
 
-import './public/reset'
+// import './public/reset'
