@@ -1,4 +1,6 @@
-console.log('It is ok!')
+
+
+
 function pro(){
   return new Promise((resolve, reject)=>{
     setTimeout(()=>{

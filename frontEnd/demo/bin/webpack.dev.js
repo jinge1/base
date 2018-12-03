@@ -3,13 +3,17 @@ const getIp = require('os-ip')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 
+function resolve(name) {
+  return path.resolve(__dirname, '..', name)
+}
+
 module.exports = {
   mode: 'development',
   entry: {
     app: './src/main.js'
   },
   output: {
-    path: path.resolve(__dirname, './dist'),
+    path: resolve('dist'),
     filename: 'bundle.js',
     publicPath: '/'
   },
@@ -21,6 +25,9 @@ module.exports = {
       {
         test: /\.js$/,
         loader: 'babel-loader'
+      }, {
+        test: /\.tsx?$/,
+        use: ['ts-loader']
       }, {
         test: /\.css$/,
         use: ['style-loader', 'css-loader', 'postcss-loader']
