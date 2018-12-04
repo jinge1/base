@@ -44,7 +44,7 @@ module.exports = {
   devtool: 'inline-source-map',
   devServer: {
     host: getIp(),
-    port: 8888,
+    port: 8800,
     contentBase: './dist'
   }
 }
