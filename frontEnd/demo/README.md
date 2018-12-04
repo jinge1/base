@@ -1,5 +1,9 @@
 需要引入 @babel/polyfill，否则会报错
 
+如果需要使用jest，则需要安装：
+babel-core
+babel-core@^7.0.0-bridge.0 --save-dev
+
 
 
 深度优先
