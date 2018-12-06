@@ -1,3 +1,8 @@
+// vue + ts demo
+// https://segmentfault.com/a/1190000015042711
+
+import greeter from './utils/greeter'
+
 
 function pro(){
   return new Promise((resolve, reject)=>{
@@ -13,3 +18,6 @@ async function asy(){
 }
 //
 asy()
+
+
+console.log('greeter: ', greeter(3))

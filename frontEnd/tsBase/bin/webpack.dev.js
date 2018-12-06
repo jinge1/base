@@ -10,7 +10,7 @@ function resolve(name) {
 module.exports = {
   mode: 'development',
   entry: {
-    app: './src/main'
+    app: './src/main.ts'
   },
   output: {
     path: resolve('dist'),
@@ -18,26 +18,28 @@ module.exports = {
     publicPath: '/'
   },
   resolve: {
-    extensions: ['.js']
+    extensions: ['.tsx', '.ts', '.js']
   },
   module: {
-    rules: [{
-      test: /\.js$/,
-      loader: 'babel-loader'
-    }, {
-      test: /\.css$/,
-      use: ['style-loader', 'css-loader', 'postcss-loader']
-    }, {
-      test: /\.(png|svg|jpg|gif)$/,
-      use: ['file-loader']
-    }]
+    rules: [
+      {
+        test: /\.tsx?$/,
+        use: ['ts-loader']
+      }, {
+        test: /\.js$/,
+        loader: 'babel-loader'
+      }, {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader', 'postcss-loader']
+      }, {
+        test: /\.(png|svg|jpg|gif)$/,
+        use: ['file-loader']
+      }
+    ]
   },
   plugins: [
     new CleanWebpackPlugin(['dist']),
-    new HtmlWebpackPlugin({
-      filename: 'index.html',
-      template: 'src/index.html'
-    })
+    new HtmlWebpackPlugin({filename: 'index.html', template: 'src/index.html'})
   ],
   devtool: 'inline-source-map',
   devServer: {
