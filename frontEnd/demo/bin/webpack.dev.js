@@ -23,11 +23,11 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.js$/,
-        loader: 'babel-loader'
-      }, {
         test: /\.tsx?$/,
         use: ['ts-loader']
+      }, {
+        test: /\.js$/,
+        loader: 'babel-loader'
       }, {
         test: /\.css$/,
         use: ['style-loader', 'css-loader', 'postcss-loader']
