@@ -4,7 +4,7 @@
 babel-core
 babel-core@^7.0.0-bridge.0 --save-dev
 
-
+// Jest uses Node.js and Node.js does not come with fetch
 
 深度优先
 广度优先

@@ -16,4 +16,5 @@ async function asy(){
 //
 asy()
 
-console.log(greeter('string2'))
+
+console.log('greeter: ', greeter(3))

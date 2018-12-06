@@ -12,6 +12,6 @@ interface Person {
     lastName: string;
 }
 
-export default function greeter(person: number) {
-    return "Hello, " + person;
+export default function greeter(person: string) {
+    return person;
 }
