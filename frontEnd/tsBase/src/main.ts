@@ -1,5 +1,7 @@
-function fn(name: string){
-    return 'hello' + name
-}
+import {ap} from './utils/url'
 
-fn('10')
+// type error
+// console.log()
+// aPromise()
+
+console.log(ap('who'))

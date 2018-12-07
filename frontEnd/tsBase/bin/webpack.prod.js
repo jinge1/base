@@ -11,7 +11,7 @@ function resolve(name) {
 module.exports = {
   mode: 'production',
   entry: {
-    app: './src/main.js'
+    app: './src/main.ts'
   },
   output: {
     path: resolve('dist'),
