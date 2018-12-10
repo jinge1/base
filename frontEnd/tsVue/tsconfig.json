@@ -5,14 +5,18 @@
     "declaration": false,
     "removeComments": false,
     "sourceMap": true,
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "module": "commonjs",
     "experimentalDecorators": true,
-    "target": "es2016"
+    "allowSyntheticDefaultImports": true,
+    "target": "es5",
+    "allowJs": true,
+    "importHelpers": true
   },
   "lib": [
     "es2015",
-    "dom"
+    "dom",
+    "es2015.promise"
   ],
   "include": [
     "./src/**/*"
