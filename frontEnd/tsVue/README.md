@@ -1,5 +1,12 @@
 需要引入 @babel/polyfill，否则会报错
 
+https://segmentfault.com/a/1190000011744210?utm_source=tuicool&utm_medium=referral
+
+https://www.jianshu.com/p/6e041a2a87b2
+
+https://segmentfault.com/a/1190000015042711
+
+
 如果需要使用jest，则需要安装：
 babel-core
 babel-core@^7.0.0-bridge.0 --save-dev

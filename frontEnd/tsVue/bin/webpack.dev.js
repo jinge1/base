@@ -2,6 +2,9 @@ const path = require('path')
 const getIp = require('os-ip')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
+const {
+  VueLoaderPlugin
+} = require('vue-loader')
 
 function resolve(name) {
   return path.resolve(__dirname, '..', name)
@@ -25,11 +28,14 @@ module.exports = {
   },
   module: {
     rules: [{
+      test: /\.vue$/,
+      use: 'vue-loader'
+    }, {
       test: /\.tsx?$/,
       use: [{
         loader: 'ts-loader',
         options: {
-          appendTsSuffixTo: [/\.vue$/],
+          appendTsSuffixTo: [/\.vue$/]
         }
       }],
       exclude: /node_modules/
@@ -49,7 +55,8 @@ module.exports = {
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: 'src/index.html'
-    })
+    }),
+    new VueLoaderPlugin()
   ],
   devtool: 'inline-source-map',
   devServer: {
