@@ -5,11 +5,11 @@
     "declaration": false,
     "removeComments": false,
     "sourceMap": true,
-    "noImplicitAny": false,
+    "noImplicitAny": true,
     "module": "commonjs",
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
-    "target": "es5",
+    "target": "es2016",
     "allowJs": true,
     "importHelpers": true
   },

@@ -3,10 +3,7 @@ module.exports = {
   testEnvironment: 'jsdom', // or node
   globals: {
     'ts-jest': {
-      // babelConfig: true,
-      // diagnostics: 
-      skipBabel: true,
-      tsConfig: './tsconfig.json'
+      "diagnostics": true
     }
   }
 }
