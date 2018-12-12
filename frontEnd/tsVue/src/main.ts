@@ -1,22 +1,12 @@
-// import Vue from "vue";
 
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
-import Hel from './comps/Hel.vue'
-
-// new Vue({
-//     el: "#app",
-//     template: `
-//     <div>
-//         <div>Hello {{name}}!</div>
-//         Name: <input v-model="name" type="text">
-//     </div>`,
-//     data: {
-//         name: "World"
-//     }
-// });
+import router from './router'
+import store from './store'
+import App from './app.vue'
 
 const app = new Vue({
-    el: '#app',
-    // router,
-    render: h => h(Hel)
+  el: '#app',
+  router,
+  store,
+  render: h => h(App)
 })
