@@ -1,14 +1,11 @@
-import { ActionTree, Action } from 'vuex'
-import {
-  ADD
-} from './mutation-types'
+import state from './state'
+import { RootStateTypes } from './types'
+import { ActionTree } from 'vuex'
 
+const actions: ActionTree<RootStateTypes, any> = {
+  SET_AUTHOR_ASYN({ commit, state: RootStateTypes }, data: string) {
+    commit('SET_AUTHOR', data);
+  }
+}
 
-const add: Action<any, any> = ({ commit }, payload) => {
-  commit(ADD, payload);
-};
-
-const actions: ActionTree<any, any> = {
-  add
-};
-export default actions;
+export default actions

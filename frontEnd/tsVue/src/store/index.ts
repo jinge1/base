@@ -1,26 +1,25 @@
 
 import Vue from 'vue'
-import mutations from './mutations'
+import Vuex, { Store } from 'vuex'
 import actions from './actions'
+import mutations from './mutations'
+import state from './state'
+import getters from './getters'
 
-// 需要使用 Vuex 的 interface 
-import Vuex, { ActionTree, MutationTree } from 'vuex'
 
 Vue.use(Vuex)
 
-interface State {
-  count: Number
-}
-
-const state: State = {
-  count: 0
-}
-
-export default new Vuex.Store({
-  state,
+const store: Store<any> = new Vuex.Store({
   actions,
-  mutations
+  mutations,
+  getters,
+  state,
+  // modules: {
+  //   //添加自定义模块
+  // }
 })
+
+export default store
 
 
 

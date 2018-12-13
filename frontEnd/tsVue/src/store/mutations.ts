@@ -1,13 +1,11 @@
+import state from './state'
+import { RootStateTypes } from './types'
 import { MutationTree } from 'vuex'
-import {
-  ADD
-} from './mutation-types'
 
-
-const mutations: MutationTree<any> = {
-  [ADD](state) {
-    state.count = state.count + 1
+const mutations: MutationTree<RootStateTypes> = {
+  SET_AUTHOR(state: RootStateTypes, data: string) {
+    state.author = data;
   }
-};
+}
 
-export default mutations;
+export default mutations
