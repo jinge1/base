@@ -6,13 +6,13 @@ export class State {
   count: number = 6
 }
 
-const getters = <GetterTree<State, any>>{
+const getters: GetterTree<State, any> = {
   count(state: State): number {
     return state.count
   }
 }
 
-const mutations = <MutationTree<State>>{
+const mutations: MutationTree<State> = {
   inc(state: State, amount: number) {
     state.count += amount
   },
@@ -21,7 +21,7 @@ const mutations = <MutationTree<State>>{
   }
 }
 
-const actions = <ActionTree<State, any>>{
+const actions: ActionTree<State, any> = {
   inc(store: ActionContext<State, any>, amount: number) {
     store.commit('inc', amount)
   },
