@@ -1,30 +1,16 @@
-
 import Vue from 'vue'
-import Vuex, { Store } from 'vuex'
-import actions from './actions'
-import mutations from './mutations'
-import state from './state'
-import getters from './getters'
+import Vuex from 'vuex'
+// import { app } from './modules/app'
+// import { jiro } from './modules/jiro'
+import { counter } from './modules/counter'
 
 
 Vue.use(Vuex)
 
-const store: Store<any> = new Vuex.Store({
-  actions,
-  mutations,
-  getters,
-  state,
-  // modules: {
-  //   //添加自定义模块
-  // }
+export default new Vuex.Store({
+  modules: {
+    // app,
+    // jiro,
+    counter
+  }
 })
-
-export default store
-
-
-
-
-
-
-
-

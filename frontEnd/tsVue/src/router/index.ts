@@ -6,13 +6,22 @@ import Index from '../components/Index.vue'
 Vue.use(Router)
 
 export default new Router({
-  routes: [{
-    path: '/index',
-    component: Index
-  },
-  {
-    path: '/about',
-    component: (): any => import('../components/About.vue')
-  }
+  routes: [
+    {
+      path: '/',
+      redirect: '/index'
+    },
+    {
+      path: '/index',
+      component: Index
+    },
+    {
+      path: '/about',
+      component: (): any => import('../components/About.vue')
+    },
+    {
+      path: '/test',
+      component: (): any => import('../components/Test.vue')
+    }
   ]
 })

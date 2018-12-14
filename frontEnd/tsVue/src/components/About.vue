@@ -1,7 +1,7 @@
 <template>
   <div class="demo">
     <input v-model="msg">
-    <p>msg: {{ msg }}</p>
+    <p>msg: {{ msg }}--{{author}}</p>
     <p>computed msg: {{ computedMsg }}</p>
     <button @click="greet">Greet</button>
   </div>
@@ -10,9 +10,11 @@
 <script lang="ts">
   import Vue from 'vue'
   import Component from 'vue-class-component'
+  // import { Getter, Mutation } from 'vuex-class'
 
   @Component
   export default class App extends Vue {
+
     // 初始化数据
     msg = 123
 
