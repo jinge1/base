@@ -2,9 +2,18 @@ import { GetterTree, MutationTree, ActionTree, ActionContext } from 'vuex'
 
 // refs: https://github.com/Anonyfox/vuex-store-module-example
 
-export class State {
-  count: number = 6
+// export class State {
+//   count: number = 6
+// }
+
+interface State{
+  count: number
 }
+
+const state:State = {
+  count: 6
+}
+
 
 const getters: GetterTree<State, any> = {
   count(state: State): number {
@@ -31,7 +40,7 @@ const actions: ActionTree<State, any> = {
 }
 
 export const counter = {
-  state: new State(),
+  state,
   getters,
   mutations,
   actions
