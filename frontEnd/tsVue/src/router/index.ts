@@ -5,7 +5,7 @@ import Index from '../components/Index.vue'
 
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
   routes: [
     {
       path: '/',
@@ -18,14 +18,14 @@ export default new Router({
     {
       path: '/about',
       component: (): any => import('../components/About.vue')
-    },
-    {
-      path: '/test',
-      component: (): any => import('../components/Test.vue')
-    },
-    {
-      path: '/test2',
-      component: (): any => import('../components/Test2.vue')
     }
   ]
 })
+
+// router.beforeEach((to, from, next) => {
+//   setTimeout(()=>{
+//     next()
+//   }, 2000)
+// })
+
+export default router

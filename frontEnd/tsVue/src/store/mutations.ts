@@ -1,11 +1,12 @@
+import { StateType } from './StateType'
 import { MutationTree } from 'vuex'
-import { addNum, changeName} from './mutation-types'
+import {addNum} from './mutation-types'
 
 
 
-export const mutations: MutationTree<any> =  {
-  [addNum](state){
-    let {num} = state
-    state.num = num + 1
+export const mutations: MutationTree<StateType> =  {
+  [addNum](state: StateType, num: number = 1){
+    let {count} = state
+    state.count = count + num
   }
 }

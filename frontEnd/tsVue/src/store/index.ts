@@ -1,10 +1,13 @@
+// https://www.jianshu.com/p/78dda0c32d0c
+
+// https://www.cnblogs.com/jkchao/p/8022586.html
+
 import Vue from 'vue'
 import Vuex from 'vuex'
-// import { app } from './modules/app'
-// import { jiro } from './modules/jiro'
 import { state } from './state'
 import { mutations} from './mutations'
-import { counter } from './modules/counter'
+import { actions } from './actions'
+import { getters } from './getters'
 
 
 Vue.use(Vuex)
@@ -12,9 +15,6 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state,
   mutations,
-  // modules: {
-  //   // app,
-  //   // jiro,
-  //   counter
-  // }
+  getters,
+  actions
 })

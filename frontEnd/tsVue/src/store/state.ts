@@ -1,13 +1,7 @@
+import {StateType} from './StateType'
 
-export interface State {
-  num: number
-  name: string
-  other: object
-}
-
-
-export const state:State = {
-  num : 0,
-  name: '',
+export const state: StateType = {
+  count : 0,
+  token: '',
   other : {}
 }

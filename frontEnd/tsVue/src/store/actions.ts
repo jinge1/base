@@ -1,12 +1,13 @@
+import { StateType } from './StateType'
 import { ActionTree } from 'vuex'
 import { addNum } from './mutation-types'
 
 
 
-export const actions: ActionTree<any, any> = {
-  [addNum]({ state, commit }) {
+export const actions: ActionTree<StateType, any> = {
+  [addNum]({ state: StateType, commit }, data: number) {
     setTimeout(()=>{
-      commit(addNum, 2)
+      commit(addNum, data)
     }, 2000)
   }
 }
