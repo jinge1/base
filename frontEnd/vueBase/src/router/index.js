@@ -12,9 +12,6 @@ const routes = new VueRouter({
     path: '/index',
     component: Index,
   }, {
-    path: '/test',
-    component: () => import('../pages/Test')
-  }, {
     // 404路由，该路由配置请当道最后
     path: '*',
     component: () => import('../pages/NoPath')

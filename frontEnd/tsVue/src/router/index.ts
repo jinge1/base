@@ -18,10 +18,6 @@ const router = new Router({
     {
       path: '/about',
       component: (): any => import('../components/About.vue')
-    },
-    {
-      path: '/test',
-      component: (): any => import('../components/Test.vue')
     }
   ]
 })
