@@ -4,8 +4,7 @@
     "node": true,
     "commonjs": true,
     "es6": true,
-    "amd": true,
-    "test": true
+    "amd": true
   },
   "globals": {
     "wx": false
@@ -16,7 +15,6 @@
   "extends": "eslint:recommended",
   "parserOptions": {
     "ecmaVersion": 6,
-    "sourceType": "script",
     "ecmaFeatures": {
       "globalReturn": true,
       "impliedStrict": true,
