@@ -13,19 +13,17 @@
 <script lang="ts">
 import Vue from 'vue'
 import Component from 'vue-class-component'
-import {State, Action, Mutation, Getter} from 'vuex-class'
-
+import { State, Action, Mutation, Getter } from 'vuex-class'
 
 @Component
 export default class Counter extends Vue {
-    @State count: number
-    @Getter msg: string
-    @Mutation('ADD_NUM') addNum: void 
-    @Action('ADD_NUM') mAddNum: void 
-    
-    created() {
-       console.log('ok?')
-    }
+  @State count: number
+  @Getter msg: string
+  @Mutation('ADD_NUM') addNum: void
+  @Action('ADD_NUM') mAddNum: void
+  created () {
+    console.log('ok?')
+  }
 
 }
 </script>

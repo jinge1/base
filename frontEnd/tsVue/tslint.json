@@ -1,6 +1,20 @@
 {
-    "extends": "tslint-config-standard",
-    "globals": {
-        "require": true
-    }
+  "extends": "tslint-config-standard",
+  "globals": {
+    "require": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "ecmaFeatures": {
+      "globalReturn": true,
+      "impliedStrict": true,
+      "jsx": false
+    },
+    "sourceType": "module"
+  },
+  "rules": {
+    "no-trailing-whitespace": false,
+    "quotemark": false,
+    "semicolon": false
+  }
 }

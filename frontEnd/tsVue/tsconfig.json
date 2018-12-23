@@ -9,14 +9,13 @@
     "module": "commonjs",
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
-    "target": "es2016",
+    "target": "es2015",
     "allowJs": true,
     "importHelpers": true
   },
   "lib": [
-    "es2015",
     "dom",
-    "es2015.promise"
+    "es2017"
   ],
   "include": [
     "./src/**/*"
