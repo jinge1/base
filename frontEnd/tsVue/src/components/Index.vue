@@ -14,6 +14,48 @@ import Vue from "vue";
 import Component from "vue-class-component";
 import { State, Action, Mutation, Getter } from "vuex-class";
 
+interface O {
+  name: string,
+  age: number,
+  other: {
+    thirdname: string
+  },
+  arr: number[]
+}
+
+function deepCopy (obj: any): any {
+  let result: any = Array.isArray(obj) ? [] : {}
+  if (Array.isArray(obj)) {
+    console.log(`1`)
+    return obj.reduce((pre, current) => {
+      pre.push(deepCopy(current))
+    }, [])
+  } else if (typeof obj === 'object') {
+    console.log(`2`)
+    return Object.keys(obj).reduce((pre: any, current: any) => {
+      console.log(`${current} -- ${obj[current]}`)
+      pre[current] = deepCopy(obj[current])
+      console.log(pre)
+    }, {})
+  } else {
+    console.log(`3`)
+    return obj
+  }
+  
+}
+
+let o: O = {
+  name: 'lixiong',
+  age: 18,
+  other: {
+    thirdname: 'third'
+  },
+  arr: [3,2,1]
+}
+let o2 = deepCopy(o)
+o2.arr[2] = 100
+console.log(o)
+
 @Component
 export default class Counter extends Vue {
   @State count: number;

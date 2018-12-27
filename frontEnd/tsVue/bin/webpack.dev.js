@@ -43,11 +43,11 @@ module.exports = {
       test: /\.js$/,
       use: ['babel-loader']
     }, {
-        test: /\.(css|postcss)$/,
+      test: /\.(css|postcss)$/,
       use: [
-      'style-loader', 
-      'css-loader', 
-      'postcss-loader'
+        'style-loader', 
+        'css-loader', 
+        'postcss-loader'
       ]
     }, {
       test: /\.(png|svg|jpg|gif)$/,
