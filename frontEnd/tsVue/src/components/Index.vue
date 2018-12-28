@@ -14,47 +14,43 @@ import Vue from "vue";
 import Component from "vue-class-component";
 import { State, Action, Mutation, Getter } from "vuex-class";
 
-interface O {
-  name: string,
-  age: number,
-  other: {
-    thirdname: string
-  },
-  arr: number[]
+function splitArr(arr: any[], splitNum: number) {
+  return arr.reduce((pre, next, index) => {
+    let parentIndex = Math.floor(index / splitNum)
+    if (typeof pre[parentIndex] === 'undefined') {
+      pre[parentIndex] = []
+    }
+    pre[parentIndex].push(next)
+    return pre
+  }, []);
 }
 
-function deepCopy (obj: any): any {
-  let result: any = Array.isArray(obj) ? [] : {}
-  if (Array.isArray(obj)) {
-    console.log(`1`)
-    return obj.reduce((pre, current) => {
-      pre.push(deepCopy(current))
-    }, [])
-  } else if (typeof obj === 'object') {
-    console.log(`2`)
-    return Object.keys(obj).reduce((pre: any, current: any) => {
-      console.log(`${current} -- ${obj[current]}`)
-      pre[current] = deepCopy(obj[current])
-      console.log(pre)
-    }, {})
+function ajax(item: number[]) {
+  return new Promise((resolve, rejext) => {
+    setTimeout(() => {
+      resolve(`ajax ${item}`)
+    }, 1000)
+  })
+}
+
+function toFetch(arr: any[], index = 0) {
+  if (index < arr.length) {
+    ajax(arr[index]).then(res => {
+      console.log(res)
+      toFetch(arr, index + 1)
+    })
   } else {
-    console.log(`3`)
-    return obj
+    console.log('over !')
   }
-  
 }
 
-let o: O = {
-  name: 'lixiong',
-  age: 18,
-  other: {
-    thirdname: 'third'
-  },
-  arr: [3,2,1]
-}
-let o2 = deepCopy(o)
-o2.arr[2] = 100
-console.log(o)
+let arr = [1, 2, 3, 4, 5, 6, 7]
+let sArr = splitArr(arr, 3)
+
+toFetch(sArr)
+
+
+// console.log(sArr);
 
 @Component
 export default class Counter extends Vue {
@@ -62,7 +58,7 @@ export default class Counter extends Vue {
   @Getter msg: string;
   @Mutation("ADD_NUM") addNum: void;
   @Action("ADD_NUM") mAddNum: void;
-  created () {
+  created() {
     console.log("ok?");
   }
 }

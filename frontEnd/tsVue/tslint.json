@@ -15,6 +15,8 @@
   "rules": {
     "no-trailing-whitespace": false,
     "quotemark": false,
-    "semicolon": false
+    "semicolon": false,
+    "space-before-function-paren": false,
+    "no-consecutive-blank-lines": false
   }
 }
