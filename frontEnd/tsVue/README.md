@@ -40,3 +40,13 @@ webpack插件，过程
 打包工具
 ionic
 ...
+
+
+
+
+AMD 与 CMD
+https://www.jianshu.com/p/7e31859fa2d9
+
+数组去重
+
+判断回文
