@@ -50,3 +50,11 @@ https://www.jianshu.com/p/7e31859fa2d9
 数组去重
 
 判断回文
+
+promise实现
+
+Cache-Control和Etag
+
+写过 webpack loader 吗
+
+简单说下双向绑定，脏治检测
