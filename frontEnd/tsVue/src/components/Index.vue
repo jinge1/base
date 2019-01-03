@@ -2,18 +2,17 @@
   <div>
     <div class="test2">
       <button @click="mAddNum(-3)">a add</button>
-      <span>{{count}}</span>
+      <span>{{count}}--{{mixinValue}}</span>
       <button @click="addNum(2)">m add</button>
     </div>
-    <p>{{msg}}</p>
+    <p @click="testFn">{{msg}}</p>
   </div>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import Component from "vue-class-component";
+import Component, { mixins } from "vue-class-component";
 import { State, Action, Mutation, Getter } from "vuex-class";
-
+import VueMixin from "../utils/VueMixin"
 
 
 
@@ -22,7 +21,7 @@ import { State, Action, Mutation, Getter } from "vuex-class";
 // console.log(sArr);
 
 @Component
-export default class Counter extends Vue {
+export default class Counter extends mixins(VueMixin) {
   @State count: number;
   @Getter msg: string;
   @Mutation("ADD_NUM") addNum: void;
