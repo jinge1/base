@@ -10,18 +10,15 @@
 </template>
 
 <script lang="ts">
-import Component, { mixins } from "vue-class-component";
+import { Component, Vue, Prop, Mixins } from "vue-property-decorator";
 import { State, Action, Mutation, Getter } from "vuex-class";
 import VueMixin from "../utils/VueMixin"
-
-
-
 
 
 // console.log(sArr);
 
 @Component
-export default class Counter extends mixins(VueMixin) {
+export default class Counter extends Mixins(VueMixin) {
   @State count: number;
   @Getter msg: string;
   @Mutation("ADD_NUM") addNum: void;

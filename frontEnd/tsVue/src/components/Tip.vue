@@ -1,10 +1,15 @@
 <template>
-  <p>tip</p>
+  <p>tip--{{message}}--{{o2}}</p>
 </template>
 <script lang="ts">
-  import Vue from 'vue'
-  import Component from 'vue-class-component'
+import { Component, Vue, Prop } from "vue-property-decorator";
 
-  @Component
-  export default class App extends Vue {}
+@Component
+export default class App extends Vue {
+  @Prop(String) message !: string
+  get o2() {
+    let { message } = this;
+    return `${message}-from o2`
+  }
+}
 </script>
